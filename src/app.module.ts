@@ -7,6 +7,19 @@ import { CategoryModule } from './category/category.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './category/entities/category.entity';
+import { MessageModule } from './message/message.module';
+import { UserModule } from './user/user.module';
+import { ProductModule } from './product/product.module';
+import { ChatModule } from './chat/chat.module';
+import { CartModule } from './cart/cart.module';
+import { FavoriteModule } from './favorite/favorite.module';
+import { User } from './user/entities/user.entity';
+import { Product } from './product/entities/product.entity';
+import { Cart } from './cart/entities/cart.entity';
+import { Favorite } from './favorite/entities/favorite.entity';
+import { Message } from './message/entities/message.entity';
+import { Chat } from './chat/entities/chat.entity';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -23,10 +36,18 @@ import { Category } from './category/entities/category.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Category],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat],
       synchronize: true,
+      autoLoadEntities: true,
     }),
     CategoryModule,
+    MessageModule,
+    UserModule,
+    ProductModule,
+    ChatModule,
+    CartModule,
+    FavoriteModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
