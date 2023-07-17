@@ -18,7 +18,7 @@ export class Message {
   @Field(() => Int)
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 500 })
   @Field({ nullable: false })
   text: string;
 

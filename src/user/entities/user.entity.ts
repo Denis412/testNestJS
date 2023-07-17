@@ -28,7 +28,7 @@ export class User {
   @Field({ nullable: false })
   last_name: string;
 
-  @Column()
+  @Column({ unique: true })
   @Field({ nullable: false })
   email: string;
 

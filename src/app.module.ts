@@ -19,7 +19,6 @@ import { Cart } from './cart/entities/cart.entity';
 import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
-import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -47,7 +46,6 @@ import { ChatsModule } from './chats/chats.module';
     ChatModule,
     CartModule,
     FavoriteModule,
-    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
