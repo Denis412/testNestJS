@@ -9,11 +9,11 @@ export class FavoriteResolver {
   constructor(private readonly favoriteService: FavoriteService) {}
 
   @Mutation(() => Favorite)
-  createFavorite(@Args('createFavoriteInput') createFavoriteInput: CreateFavoriteInput) {
-    return this.favoriteService.create(createFavoriteInput);
+  createFavorite(@Args('input') input: CreateFavoriteInput) {
+    return this.favoriteService.create(input);
   }
 
-  @Query(() => [Favorite], { name: 'favorite' })
+  @Query(() => [Favorite], { name: 'favorites' })
   findAll() {
     return this.favoriteService.findAll();
   }
@@ -24,8 +24,11 @@ export class FavoriteResolver {
   }
 
   @Mutation(() => Favorite)
-  updateFavorite(@Args('updateFavoriteInput') updateFavoriteInput: UpdateFavoriteInput) {
-    return this.favoriteService.update(updateFavoriteInput.id, updateFavoriteInput);
+  updateFavorite(
+    @Args('input') updateFavoriteInput: UpdateFavoriteInput,
+    @Args('id') id: number,
+  ) {
+    return this.favoriteService.update(id, updateFavoriteInput);
   }
 
   @Mutation(() => Favorite)

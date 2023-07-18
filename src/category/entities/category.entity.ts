@@ -11,7 +11,7 @@ import {
 @ObjectType()
 export class Category {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
   @Column({ unique: true })

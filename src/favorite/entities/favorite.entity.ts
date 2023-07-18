@@ -15,6 +15,7 @@ import {
 @ObjectType()
 export class Favorite {
   @PrimaryGeneratedColumn()
+  @Field(() => Int)
   id: number;
 
   @Field({ nullable: false })

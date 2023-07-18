@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { MessageService } from './message.service';
 import { Message } from './entities/message.entity';
 import { CreateMessageInput } from './dto/create-message.input';
@@ -9,11 +17,11 @@ export class MessageResolver {
   constructor(private readonly messageService: MessageService) {}
 
   @Mutation(() => Message)
-  createMessage(@Args('createMessageInput') createMessageInput: CreateMessageInput) {
+  createMessage(@Args('input') createMessageInput: CreateMessageInput) {
     return this.messageService.create(createMessageInput);
   }
 
-  @Query(() => [Message], { name: 'message' })
+  @Query(() => [Message], { name: 'messages' })
   findAll() {
     return this.messageService.findAll();
   }
@@ -24,8 +32,11 @@ export class MessageResolver {
   }
 
   @Mutation(() => Message)
-  updateMessage(@Args('updateMessageInput') updateMessageInput: UpdateMessageInput) {
-    return this.messageService.update(updateMessageInput.id, updateMessageInput);
+  updateMessage(
+    @Args('input') updateMessageInput: UpdateMessageInput,
+    @Args('id') id: number,
+  ) {
+    return this.messageService.update(id, updateMessageInput);
   }
 
   @Mutation(() => Message)

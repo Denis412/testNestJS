@@ -23,17 +23,17 @@ export class Message {
   text: string;
 
   @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'sender_id' })
   sender: User;
 
   @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'recipient_id' })
   recipient: User;
 
   @Field({ nullable: false })
-  @ManyToOne(() => Chat, (chat) => chat.id)
+  @ManyToOne(() => Chat, (chat) => chat.id, { eager: true })
   @JoinColumn({ name: 'chat_id' })
   chat: Chat;
 

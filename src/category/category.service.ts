@@ -16,11 +16,11 @@ export class CategoryService {
     return this.repository.save(createCategoryInput);
   }
 
-  findAll(): Promise<Category[]> {
+  findAll() {
     return this.repository.find();
   }
 
-  findOne(id: number): Promise<Category> {
+  findOne(id: number) {
     return this.repository.findOneBy({ id });
   }
 
@@ -28,7 +28,7 @@ export class CategoryService {
     return this.repository.save({ ...updateCategoryInput, id });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.repository.delete({ id });
+  async remove(id: number) {
+    await this.repository.delete(id);
   }
 }

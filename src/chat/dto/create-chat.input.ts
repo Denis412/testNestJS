@@ -1,7 +1,15 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field, ObjectType } from '@nestjs/graphql';
+import { RelationSingleInput } from 'src/inputs/relation-single.entity';
 
+@ObjectType()
 @InputType()
 export class CreateChatInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field({ nullable: false })
+  name: string;
+
+  @Field({ nullable: false })
+  buyer: RelationSingleInput;
+
+  @Field({ nullable: false })
+  saller: RelationSingleInput;
 }

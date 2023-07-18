@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageInput } from './dto/create-message.input';
 import { UpdateMessageInput } from './dto/update-message.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Message } from './entities/message.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MessageService {
+  constructor(
+    @InjectRepository(Message) private readonly repository: Repository<Message>,
+  ) {}
+
   create(createMessageInput: CreateMessageInput) {
-    return 'This action adds a new message';
+    return this.repository.save(createMessageInput);
   }
 
   findAll() {
-    return `This action returns all message`;
+    return this.repository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} message`;
+    return this.repository.findOneBy({ id });
   }
 
   update(id: number, updateMessageInput: UpdateMessageInput) {
-    return `This action updates a #${id} message`;
+    return this.repository.save({ ...updateMessageInput, id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+  async remove(id: number) {
+    await this.repository.delete(id);
   }
 }

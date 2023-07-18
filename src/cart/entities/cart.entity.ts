@@ -15,6 +15,7 @@ import {
 @ObjectType()
 export class Cart {
   @PrimaryGeneratedColumn()
+  @Field(() => Int)
   id: number;
 
   @Field({ nullable: false })

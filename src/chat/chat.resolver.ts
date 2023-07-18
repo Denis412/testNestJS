@@ -1,19 +1,31 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { Chat } from './entities/chat.entity';
 import { CreateChatInput } from './dto/create-chat.input';
 import { UpdateChatInput } from './dto/update-chat.input';
+import { UserService } from 'src/user/user.service';
 
 @Resolver(() => Chat)
 export class ChatResolver {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly userService: UserService,
+  ) {}
 
   @Mutation(() => Chat)
-  createChat(@Args('createChatInput') createChatInput: CreateChatInput) {
+  createChat(@Args('input') createChatInput: CreateChatInput) {
     return this.chatService.create(createChatInput);
   }
 
-  @Query(() => [Chat], { name: 'chat' })
+  @Query(() => [Chat], { name: 'chats' })
   findAll() {
     return this.chatService.findAll();
   }
@@ -24,12 +36,22 @@ export class ChatResolver {
   }
 
   @Mutation(() => Chat)
-  updateChat(@Args('updateChatInput') updateChatInput: UpdateChatInput) {
-    return this.chatService.update(updateChatInput.id, updateChatInput);
+  updateChat(
+    @Args('input') updateChatInput: UpdateChatInput,
+    @Args('id') id: number,
+  ) {
+    return this.chatService.update(id, updateChatInput);
   }
 
   @Mutation(() => Chat)
   removeChat(@Args('id', { type: () => Int }) id: number) {
     return this.chatService.remove(id);
+  }
+
+  @ResolveField('saller')
+  async saller(@Parent() chat: Chat) {
+    const saller = chat.saller;
+    delete saller.password;
+    return saller;
   }
 }

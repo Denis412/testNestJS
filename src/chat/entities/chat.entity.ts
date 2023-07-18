@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -22,12 +22,12 @@ export class Chat {
   name: string;
 
   @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'byuer_id' })
   buyer: User;
 
-  @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @Field({ nullable: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'saller_id' })
   saller: User;
 

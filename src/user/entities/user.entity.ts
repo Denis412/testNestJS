@@ -1,13 +1,13 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Chat } from 'src/chat/entities/chat.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Exclude } from 'class-transformer';
 
 @ObjectType()
 @Entity()
@@ -16,24 +16,23 @@ export class User {
   @Field(() => Int)
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   @Field({ nullable: false })
   first_name: string;
 
-  @Column()
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   middle_name: string;
 
-  @Column()
+  @Column({ nullable: false })
   @Field({ nullable: false })
   last_name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   @Field({ nullable: false })
   email: string;
 
-  @Column()
-  @Field({ nullable: false })
+  @Column({ nullable: false })
   password: string;
 
   @CreateDateColumn()

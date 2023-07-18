@@ -9,11 +9,11 @@ export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
   @Mutation(() => Cart)
-  createCart(@Args('createCartInput') createCartInput: CreateCartInput) {
-    return this.cartService.create(createCartInput);
+  createCart(@Args('input') input: CreateCartInput) {
+    return this.cartService.create(input);
   }
 
-  @Query(() => [Cart], { name: 'cart' })
+  @Query(() => [Cart], { name: 'carts' })
   findAll() {
     return this.cartService.findAll();
   }
@@ -24,8 +24,8 @@ export class CartResolver {
   }
 
   @Mutation(() => Cart)
-  updateCart(@Args('updateCartInput') updateCartInput: UpdateCartInput) {
-    return this.cartService.update(updateCartInput.id, updateCartInput);
+  updateCart(@Args('input') input: UpdateCartInput, @Args('id') id: number) {
+    return this.cartService.update(id, input);
   }
 
   @Mutation(() => Cart)

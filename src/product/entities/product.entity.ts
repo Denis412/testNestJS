@@ -15,14 +15,15 @@ import {
 @ObjectType()
 export class Product {
   @PrimaryGeneratedColumn()
+  @Field(() => Int)
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   @Field({ nullable: false })
   title: string;
 
-  @Column()
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   description: string;
 
   @Column({ type: 'float', nullable: false })
@@ -33,8 +34,8 @@ export class Product {
   @Field({ nullable: true })
   prev_price: number;
 
-  @Column({ type: 'int', nullable: false })
-  @Field({ nullable: false })
+  @Column({ type: 'int', nullable: false, default: 1 })
+  @Field({ nullable: false, defaultValue: 1 })
   quantity: number;
 
   @Field({ nullable: false })
@@ -47,8 +48,8 @@ export class Product {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column()
-  @Field({ nullable: false })
+  @Column({ nullable: true })
+  @Field({ nullable: true, defaultValue: null })
   image_url: string;
 
   @CreateDateColumn()
