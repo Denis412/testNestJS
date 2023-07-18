@@ -8,10 +8,10 @@ import { UpdateUserInput } from './dto/update-user.input';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => User)
-  createUser(@Args('input') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
-  }
+  // @Mutation(() => User)
+  // createUser(@Args('input') createUserInput: CreateUserInput) {
+  //   return this.userService.create(createUserInput);
+  // }
 
   @Query(() => [User], { name: 'users' })
   findAll() {
@@ -29,10 +29,5 @@ export class UserResolver {
     @Args('id') id: number,
   ) {
     return this.userService.update(id, updateUserInput);
-  }
-
-  @Mutation(() => User)
-  deleteUser(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.remove(id);
   }
 }
