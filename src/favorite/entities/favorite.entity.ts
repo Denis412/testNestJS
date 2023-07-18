@@ -19,12 +19,12 @@ export class Favorite {
   id: number;
 
   @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Field({ nullable: false })
-  @ManyToOne(() => Product, (product) => product.id)
+  @ManyToOne(() => Product, (product) => product.id, { eager: true })
   @JoinColumn({ name: 'product_id' })
   product: Product;
 

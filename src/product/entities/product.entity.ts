@@ -39,12 +39,12 @@ export class Product {
   quantity: number;
 
   @Field({ nullable: false })
-  @ManyToOne(() => Category, (category) => category.id)
+  @ManyToOne(() => Category, (category) => category.id, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
   @Field({ nullable: false })
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

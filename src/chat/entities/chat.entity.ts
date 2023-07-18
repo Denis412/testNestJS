@@ -23,7 +23,7 @@ export class Chat {
 
   @Field({ nullable: false })
   @ManyToOne(() => User, (user) => user.id, { eager: true })
-  @JoinColumn({ name: 'byuer_id' })
+  @JoinColumn({ name: 'buyer_id' })
   buyer: User;
 
   @Field({ nullable: true })
