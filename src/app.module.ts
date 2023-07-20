@@ -19,11 +19,7 @@ import { Cart } from './cart/entities/cart.entity';
 import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
-import { AuthModule } from './auth/auth.module';
-import { SingInModule } from './sing-in/sing-in.module';
-import { SingUpModule } from './sing-up/sing-up.module';
-import { SingUp } from './sing-up/entities/sing-up.entity';
-import { Auth1Module } from './auth1/auth1.module';
+import { Auth1Module } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -40,16 +36,7 @@ import { Auth1Module } from './auth1/auth1.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [
-        Category,
-        User,
-        Product,
-        Cart,
-        Favorite,
-        Message,
-        Chat,
-        SingUp,
-      ],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -60,10 +47,7 @@ import { Auth1Module } from './auth1/auth1.module';
     ChatModule,
     CartModule,
     FavoriteModule,
-    AuthModule,
     Auth1Module,
-    SingInModule,
-    SingUpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

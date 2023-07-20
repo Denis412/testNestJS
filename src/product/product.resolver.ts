@@ -4,8 +4,7 @@ import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { JWTGuard } from 'src/guard/JWTGuard';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
 @Resolver(() => Product)
 export class ProductResolver {
