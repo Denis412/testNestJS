@@ -3,6 +3,9 @@ import { ProductService } from './product.service';
 import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JWTGuard } from 'src/guard/JWTGuard';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -13,6 +16,7 @@ export class ProductResolver {
     return this.productService.create(createProductInput);
   }
 
+  @UseGuards(JWTGuard)
   @Query(() => [Product], { name: 'products' })
   findAll() {
     return this.productService.findAll();

@@ -23,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
 import { SingInModule } from './sing-in/sing-in.module';
 import { SingUpModule } from './sing-up/sing-up.module';
 import { SingUp } from './sing-up/entities/sing-up.entity';
+import { Auth1Module } from './auth1/auth1.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { SingUp } from './sing-up/entities/sing-up.entity';
     CartModule,
     FavoriteModule,
     AuthModule,
+    Auth1Module,
     SingInModule,
     SingUpModule,
   ],

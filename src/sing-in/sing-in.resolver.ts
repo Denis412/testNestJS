@@ -7,8 +7,8 @@ import { SingInInput } from './dto/sing-in.input';
 export class SingInResolver {
   constructor(private readonly singInService: SingInService) {}
 
-  @Mutation(() => SingIn, { name: 'SignIn' })
-  createSingIn(@Args('input') input: SingInInput) {
-    return this.singInService.create(input);
-  }
+  // @Mutation(() => SingIn, { name: 'SignIn' })
+  // createSingIn(@Args('input') input: SingInInput) {
+  //   return this.singInService.create(input);
+  // }
 }
