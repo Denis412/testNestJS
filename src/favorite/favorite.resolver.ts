@@ -3,6 +3,8 @@ import { FavoriteService } from './favorite.service';
 import { Favorite } from './entities/favorite.entity';
 import { CreateFavoriteInput } from './dto/create-favorite.input';
 import { UpdateFavoriteInput } from './dto/update-favorite.input';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Favorite)
 export class FavoriteResolver {
@@ -14,8 +16,13 @@ export class FavoriteResolver {
   }
 
   @Query(() => [Favorite], { name: 'favorites' })
-  findAll() {
-    return this.favoriteService.findAll();
+  findAll(
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.favoriteService.findAll(where, orderBy);
   }
 
   @Query(() => Favorite, { name: 'favorite' })

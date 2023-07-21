@@ -3,6 +3,8 @@ import { CartService } from './cart.service';
 import { Cart } from './entities/cart.entity';
 import { CreateCartInput } from './dto/create-cart.input';
 import { UpdateCartInput } from './dto/update-cart.input';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Cart)
 export class CartResolver {
@@ -14,8 +16,13 @@ export class CartResolver {
   }
 
   @Query(() => [Cart], { name: 'carts' })
-  findAll() {
-    return this.cartService.findAll();
+  findAll(
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.cartService.findAll(where, orderBy);
   }
 
   @Query(() => Cart, { name: 'cart' })

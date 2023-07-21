@@ -5,6 +5,8 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -17,12 +19,19 @@ export class ProductResolver {
 
   @UseGuards(JWTGuard)
   @Query(() => [Product], { name: 'products' })
-  findAll() {
-    return this.productService.findAll();
+  findAll(
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy | null,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere | null,
+  ) {
+    return this.productService.findAll(where, orderBy);
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Product> | Promise<null> {
     return this.productService.findOne(id);
   }
 

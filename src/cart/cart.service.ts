@@ -4,6 +4,8 @@ import { UpdateCartInput } from './dto/update-cart.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Injectable()
 export class CartService {
@@ -15,8 +17,19 @@ export class CartService {
     return this.repository.save(createCartInput);
   }
 
-  findAll() {
-    return this.repository.find();
+  findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
+    const input = { where: null, order: null };
+
+    if (where)
+      input.where = {
+        [where.column]: where.value,
+      };
+    if (orderBy)
+      input.order = {
+        [orderBy.column]: orderBy.order,
+      };
+
+    return this.repository.find(input);
   }
 
   findOne(id: number) {
