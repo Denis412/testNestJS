@@ -17,12 +17,14 @@ export class FavoriteResolver {
 
   @Query(() => [Favorite], { name: 'favorites' })
   findAll(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
     @Args('where', { type: () => PaginatorWhere, nullable: true })
     where?: PaginatorWhere,
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
     orderBy?: PaginatorOrderBy,
   ) {
-    return this.favoriteService.findAll(where, orderBy);
+    return this.favoriteService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Favorite, { name: 'favorite' })
@@ -33,13 +35,13 @@ export class FavoriteResolver {
   @Mutation(() => Favorite)
   updateFavorite(
     @Args('input') updateFavoriteInput: UpdateFavoriteInput,
-    @Args('id') id: number,
+    @Args('id', { type: () => Int }) id: number,
   ) {
     return this.favoriteService.update(id, updateFavoriteInput);
   }
 
   @Mutation(() => Favorite)
-  removeFavorite(@Args('id', { type: () => Int }) id: number) {
+  deleteFavorite(@Args('id', { type: () => Int }) id: number) {
     return this.favoriteService.remove(id);
   }
 }

@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Injectable()
 export class UserService {
@@ -19,7 +21,7 @@ export class UserService {
     return this.repository.save(input);
   }
 
-  findAll() {
+  findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     return this.repository.find();
   }
 

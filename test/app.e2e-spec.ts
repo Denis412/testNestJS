@@ -3,6 +3,8 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+const gql = '/graphql';
+
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
@@ -15,10 +17,19 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe(gql, () => {
+    it('should get the products array', () => {
+      return request(app.getHttpServer())
+        .post(gql)
+        .send({ query: '{products {id title description category }}' })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.data.products).toEqual([]);
+        });
+    });
   });
 });

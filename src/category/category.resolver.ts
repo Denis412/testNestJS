@@ -4,6 +4,8 @@ import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { Categories } from './entities/categories.entity';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -15,8 +17,15 @@ export class CategoryResolver {
   }
 
   @Query(() => [Category], { name: 'categories' })
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.categoryService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Category, { name: 'category' })
@@ -33,7 +42,7 @@ export class CategoryResolver {
   }
 
   @Mutation(() => Category)
-  removeCategory(@Args('id', { type: () => Int }) id: number) {
+  deleteCategory(@Args('id', { type: () => Int }) id: number) {
     return this.categoryService.remove(id);
   }
 }

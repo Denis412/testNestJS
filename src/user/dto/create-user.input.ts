@@ -1,16 +1,21 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 
 @InputType()
 export class CreateUserInput {
-  @Field({ nullable: false })
+  @ApiProperty()
+  @Field({ nullable: false, description: 'Имя' })
   first_name: string;
 
-  @Field({ nullable: false })
+  @ApiProperty()
+  @Field({ nullable: false, description: 'Фамилия' })
   last_name: string;
 
-  @Field({ nullable: false })
+  @ApiProperty()
+  @Field({ nullable: false, description: 'Почта' })
   email: string;
 
-  @Field({ nullable: false })
+  @ApiProperty()
+  @Field({ nullable: false, description: 'Пароль' })
   password: string;
 }

@@ -11,6 +11,8 @@ import { MessageService } from './message.service';
 import { Message } from './entities/message.entity';
 import { CreateMessageInput } from './dto/create-message.input';
 import { UpdateMessageInput } from './dto/update-message.input';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Message)
 export class MessageResolver {
@@ -22,8 +24,15 @@ export class MessageResolver {
   }
 
   @Query(() => [Message], { name: 'messages' })
-  findAll() {
-    return this.messageService.findAll();
+  findAll(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.messageService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Message, { name: 'message' })
@@ -34,13 +43,13 @@ export class MessageResolver {
   @Mutation(() => Message)
   updateMessage(
     @Args('input') updateMessageInput: UpdateMessageInput,
-    @Args('id') id: number,
+    @Args('id', { type: () => Int }) id: number,
   ) {
     return this.messageService.update(id, updateMessageInput);
   }
 
   @Mutation(() => Message)
-  removeMessage(@Args('id', { type: () => Int }) id: number) {
+  deleteMessage(@Args('id', { type: () => Int }) id: number) {
     return this.messageService.remove(id);
   }
 }

@@ -17,7 +17,12 @@ export class CartService {
     return this.repository.save(createCartInput);
   }
 
-  findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
+  findAll(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
     const input = { where: null, order: null };
 
     if (where)

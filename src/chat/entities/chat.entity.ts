@@ -31,9 +31,11 @@ export class Chat {
   @JoinColumn({ name: 'saller_id' })
   saller: User;
 
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 
+  @Field()
   @UpdateDateColumn()
   updated_at: Date;
 }

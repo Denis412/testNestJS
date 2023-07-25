@@ -4,6 +4,8 @@ import { UpdateChatInput } from './dto/update-chat.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Injectable()
 export class ChatService {
@@ -15,7 +17,12 @@ export class ChatService {
     return this.repository.save(createChatInput);
   }
 
-  findAll() {
+  findAll(
+    page?: number,
+    perPage?: number,
+    where?: PaginatorWhere,
+    orderBy?: PaginatorOrderBy,
+  ) {
     return this.repository.find();
   }
 

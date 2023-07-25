@@ -12,6 +12,8 @@ import { Chat } from './entities/chat.entity';
 import { CreateChatInput } from './dto/create-chat.input';
 import { UpdateChatInput } from './dto/update-chat.input';
 import { UserService } from 'src/user/user.service';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => Chat)
 export class ChatResolver {
@@ -26,8 +28,15 @@ export class ChatResolver {
   }
 
   @Query(() => [Chat], { name: 'chats' })
-  findAll() {
-    return this.chatService.findAll();
+  findAll(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.chatService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Chat, { name: 'chat' })
@@ -38,20 +47,20 @@ export class ChatResolver {
   @Mutation(() => Chat)
   updateChat(
     @Args('input') updateChatInput: UpdateChatInput,
-    @Args('id') id: number,
+    @Args('id', { type: () => Int }) id: number,
   ) {
     return this.chatService.update(id, updateChatInput);
   }
 
   @Mutation(() => Chat)
-  removeChat(@Args('id', { type: () => Int }) id: number) {
+  deleteChat(@Args('id', { type: () => Int }) id: number) {
     return this.chatService.remove(id);
   }
 
-  @ResolveField('saller')
-  async saller(@Parent() chat: Chat) {
-    const saller = chat.saller;
-    delete saller.password;
-    return saller;
-  }
+  // @ResolveField('saller')
+  // async saller(@Parent() chat: Chat) {
+  //   const saller = chat.saller;
+  //   delete saller.password;
+  //   return saller;
+  // }
 }

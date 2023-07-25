@@ -28,9 +28,11 @@ export class Favorite {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 
+  @Field()
   @UpdateDateColumn()
   updated_at: Date;
 }

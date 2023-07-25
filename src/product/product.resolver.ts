@@ -20,10 +20,12 @@ export class ProductResolver {
   @UseGuards(JWTGuard)
   @Query(() => [Product], { name: 'products' })
   findAll(
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy | null,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
     @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere | null,
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
   ) {
     return this.productService.findAll(where, orderBy);
   }
@@ -37,8 +39,9 @@ export class ProductResolver {
 
   @Mutation(() => Product)
   updateProduct(
-    @Args('input') updateProductInput: UpdateProductInput,
-    @Args('id') id: number,
+    @Args('input', { type: () => UpdateProductInput })
+    updateProductInput: UpdateProductInput,
+    @Args('id', { type: () => Int }) id: number,
   ) {
     return this.productService.update(id, updateProductInput);
   }

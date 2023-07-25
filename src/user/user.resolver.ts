@@ -1,21 +1,24 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  // @Mutation(() => User)
-  // createUser(@Args('input') createUserInput: CreateUserInput) {
-  //   return this.userService.create(createUserInput);
-  // }
-
   @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.userService.findAll();
+  findAll(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.userService.findAll(where, orderBy);
   }
 
   @Query(() => User, { name: 'user' })
@@ -25,8 +28,9 @@ export class UserResolver {
 
   @Mutation(() => User)
   updateUser(
-    @Args('input') updateUserInput: UpdateUserInput,
-    @Args('id') id: number,
+    @Args('input', { type: () => UpdateUserInput })
+    updateUserInput: UpdateUserInput,
+    @Args('id', { type: () => Int }) id: number,
   ) {
     return this.userService.update(id, updateUserInput);
   }

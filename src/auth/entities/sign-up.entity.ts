@@ -12,6 +12,6 @@ export class SingUp extends CreateUserInput {
   @Field({ nullable: false })
   email: string;
 
-  @Field({ nullable: false })
+  // @Field({ nullable: false })
   password: string;
 }

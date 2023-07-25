@@ -18,7 +18,12 @@ export class FavoriteService {
     return this.repository.save(input);
   }
 
-  findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
+  findAll(
+    page?: number,
+    perPage?: number,
+    where?: PaginatorWhere,
+    orderBy?: PaginatorOrderBy,
+  ) {
     const input = { where: null, order: null };
 
     if (where)

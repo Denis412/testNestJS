@@ -17,12 +17,14 @@ export class CartResolver {
 
   @Query(() => [Cart], { name: 'carts' })
   findAll(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
     @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere,
+    where: PaginatorWhere,
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy,
+    orderBy: PaginatorOrderBy,
   ) {
-    return this.cartService.findAll(where, orderBy);
+    return this.cartService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Cart, { name: 'cart' })
@@ -31,12 +33,15 @@ export class CartResolver {
   }
 
   @Mutation(() => Cart)
-  updateCart(@Args('input') input: UpdateCartInput, @Args('id') id: number) {
+  updateCart(
+    @Args('input') input: UpdateCartInput,
+    @Args('id', { type: () => Int }) id: number,
+  ) {
     return this.cartService.update(id, input);
   }
 
   @Mutation(() => Cart)
-  removeCart(@Args('id', { type: () => Int }) id: number) {
+  deleteCart(@Args('id', { type: () => Int }) id: number) {
     return this.cartService.remove(id);
   }
 }
