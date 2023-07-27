@@ -34,6 +34,14 @@ export class CartService {
         [orderBy.column]: orderBy.order,
       };
 
+    if (where?.column.includes('->')) {
+      input.where = {
+        [where.column.slice(0, where.column.indexOf('->'))]: {
+          [where.column.slice(where.column.indexOf('->') + 2)]: where.value,
+        },
+      };
+    }
+
     return this.repository.find(input);
   }
 

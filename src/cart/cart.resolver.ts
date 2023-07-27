@@ -5,7 +5,10 @@ import { CreateCartInput } from './dto/create-cart.input';
 import { UpdateCartInput } from './dto/update-cart.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Cart)
 export class CartResolver {
   constructor(private readonly cartService: CartService) {}
@@ -41,7 +44,13 @@ export class CartResolver {
   }
 
   @Mutation(() => Cart)
-  deleteCart(@Args('id', { type: () => Int }) id: number) {
-    return this.cartService.remove(id);
+  async deleteCart(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<{ id: number }> {
+    await this.cartService.remove(id);
+
+    return {
+      id,
+    };
   }
 }

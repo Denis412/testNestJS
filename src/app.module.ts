@@ -20,6 +20,8 @@ import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
 import { Auth1Module } from './auth/auth.module';
+import { WebsocketsModule } from './websockets/websockets.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { Auth1Module } from './auth/auth.module';
     CartModule,
     FavoriteModule,
     Auth1Module,
+    GatewayModule,
+    WebsocketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

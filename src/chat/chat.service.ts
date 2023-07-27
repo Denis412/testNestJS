@@ -23,15 +23,35 @@ export class ChatService {
     where?: PaginatorWhere,
     orderBy?: PaginatorOrderBy,
   ) {
-    return this.repository.find();
+    const input = { where: null, order: null };
+
+    if (where)
+      input.where = {
+        [where.column]: where.value,
+      };
+    if (orderBy)
+      input.order = {
+        [orderBy.column]: orderBy.order,
+      };
+
+    if (where?.column.includes('->')) {
+      input.where = {
+        [where.column.slice(0, where.column.indexOf('->'))]: {
+          [where.column.slice(where.column.indexOf('->') + 2)]: where.value,
+        },
+      };
+    }
+
+    return this.repository.find(input);
   }
 
   findOne(id: number) {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateChatInput: UpdateChatInput) {
-    return this.repository.save({ ...updateChatInput, id });
+  async update(id: number, updateChatInput: UpdateChatInput) {
+    const chat = await this.repository.save({ ...updateChatInput, id });
+    return this.repository.findOneBy({ id: chat.id });
   }
 
   async remove(id: number) {

@@ -22,6 +22,9 @@ export class CreateProductInput {
   image: string;
 
   @Field({ nullable: false })
+  user: RelationSingleInput;
+
+  @Field({ nullable: false })
   category: RelationSingleInput;
 
   @Field({ nullable: false })

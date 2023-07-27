@@ -8,6 +8,7 @@ import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
@@ -17,7 +18,6 @@ export class ProductResolver {
     return this.productService.create(createProductInput);
   }
 
-  @UseGuards(JWTGuard)
   @Query(() => [Product], { name: 'products' })
   findAll(
     @Args('page', { type: () => Int, nullable: true }) page: number,
@@ -47,7 +47,11 @@ export class ProductResolver {
   }
 
   @Mutation(() => Product)
-  deleteProduct(@Args('id', { type: () => Int }) id: number) {
-    return this.productService.remove(id);
+  async deleteProduct(@Args('id', { type: () => Int }) id: number) {
+    await this.productService.remove(id);
+
+    return {
+      id,
+    };
   }
 }

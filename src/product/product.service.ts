@@ -44,8 +44,12 @@ export class ProductService {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateProductInput: UpdateProductInput) {
-    return this.repository.save({ ...updateProductInput, id });
+  async update(
+    id: number,
+    updateProductInput: UpdateProductInput,
+  ): Promise<Product> {
+    const product = await this.repository.save({ ...updateProductInput, id });
+    return this.repository.findOneBy({ id: product.id });
   }
 
   remove(id: number) {

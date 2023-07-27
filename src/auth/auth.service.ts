@@ -21,6 +21,21 @@ export class AuthService {
     return null;
   }
 
+  async validRefresh(context) {
+    console.log(context.req);
+
+    const payload = {
+      id: context.req.user.userId,
+      email: context.req.user.email,
+    };
+    const refreshToken = context.req
+      .get('Authorization')
+      .replace('Bearer', '')
+      .trim();
+
+    return { ...payload, refreshToken };
+  }
+
   async login(user: Partial<User>): Promise<SingIn> {
     const payload = { email: user.email, id: user.id };
 

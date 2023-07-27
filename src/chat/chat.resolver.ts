@@ -14,7 +14,10 @@ import { UpdateChatInput } from './dto/update-chat.input';
 import { UserService } from 'src/user/user.service';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Chat)
 export class ChatResolver {
   constructor(
@@ -53,8 +56,12 @@ export class ChatResolver {
   }
 
   @Mutation(() => Chat)
-  deleteChat(@Args('id', { type: () => Int }) id: number) {
-    return this.chatService.remove(id);
+  async deleteChat(@Args('id', { type: () => Int }) id: number) {
+    await this.chatService.remove(id);
+
+    return {
+      id,
+    };
   }
 
   // @ResolveField('saller')

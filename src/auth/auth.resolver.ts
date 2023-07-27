@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
 import { UseGuards } from '@nestjs/common';
@@ -9,6 +9,7 @@ import { LocalGuard } from './guards/LocalGuard';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { SignUpInput } from './dto/sign-up.input';
+import { RefreshGuard } from './guards/RefreshGuard';
 
 @Resolver(() => Auth)
 export class Auth1Resolver {
@@ -21,6 +22,12 @@ export class Auth1Resolver {
   @Mutation(() => SingIn, { name: 'SignIn' })
   SignIn(@Args('input') input: SignInInput): Promise<SingIn> {
     return this.authService.validateUser(input.email, input.password);
+  }
+
+  @UseGuards(RefreshGuard)
+  @Mutation(() => SingIn, { name: 'RefreshToken' })
+  refreshToken(@Context() context) {
+    return this.authService.validRefresh(context);
   }
 
   @Mutation(() => SingUp, { name: 'SignUp' })

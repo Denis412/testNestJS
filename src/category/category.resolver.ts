@@ -6,7 +6,10 @@ import { UpdateCategoryInput } from './dto/update-category.input';
 import { Categories } from './entities/categories.entity';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Category)
 export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
@@ -42,7 +45,10 @@ export class CategoryResolver {
   }
 
   @Mutation(() => Category)
-  deleteCategory(@Args('id', { type: () => Int }) id: number) {
-    return this.categoryService.remove(id);
+  async deleteCategory(@Args('id', { type: () => Int }) id: number) {
+    await this.categoryService.remove(id);
+    return {
+      id,
+    };
   }
 }

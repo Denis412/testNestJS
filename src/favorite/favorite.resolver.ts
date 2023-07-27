@@ -5,7 +5,10 @@ import { CreateFavoriteInput } from './dto/create-favorite.input';
 import { UpdateFavoriteInput } from './dto/update-favorite.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Favorite)
 export class FavoriteResolver {
   constructor(private readonly favoriteService: FavoriteService) {}
@@ -41,7 +44,13 @@ export class FavoriteResolver {
   }
 
   @Mutation(() => Favorite)
-  deleteFavorite(@Args('id', { type: () => Int }) id: number) {
-    return this.favoriteService.remove(id);
+  async deleteFavorite(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<{ id: number }> {
+    await this.favoriteService.remove(id);
+
+    return {
+      id,
+    };
   }
 }

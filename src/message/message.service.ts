@@ -23,15 +23,35 @@ export class MessageService {
     where?: PaginatorWhere,
     orderBy?: PaginatorOrderBy,
   ) {
-    return this.repository.find();
+    const input = { where: null, order: null };
+
+    if (where)
+      input.where = {
+        [where.column]: where.value,
+      };
+    if (orderBy)
+      input.order = {
+        [orderBy.column]: orderBy.order,
+      };
+
+    if (where?.column.includes('->')) {
+      input.where = {
+        [where.column.slice(0, where.column.indexOf('->'))]: {
+          [where.column.slice(where.column.indexOf('->') + 2)]: where.value,
+        },
+      };
+    }
+
+    return this.repository.find(input);
   }
 
   findOne(id: number) {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateMessageInput: UpdateMessageInput) {
-    return this.repository.save({ ...updateMessageInput, id });
+  async update(id: number, updateMessageInput: UpdateMessageInput) {
+    const message = await this.repository.save({ ...updateMessageInput, id });
+    return this.repository.findOneBy({ id: message.id });
   }
 
   async remove(id: number) {

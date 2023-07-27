@@ -13,7 +13,10 @@ import { CreateMessageInput } from './dto/create-message.input';
 import { UpdateMessageInput } from './dto/update-message.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => Message)
 export class MessageResolver {
   constructor(private readonly messageService: MessageService) {}
@@ -49,7 +52,10 @@ export class MessageResolver {
   }
 
   @Mutation(() => Message)
-  deleteMessage(@Args('id', { type: () => Int }) id: number) {
-    return this.messageService.remove(id);
+  async deleteMessage(@Args('id', { type: () => Int }) id: number) {
+    await this.messageService.remove(id);
+    return {
+      id,
+    };
   }
 }
