@@ -1,16 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
 import { SingIn } from './entities/sign-in.entity';
+import { AuthTokens } from './entities/auth-tokens.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UsedRefresh } from './entities/used-refresh.entity';
+import { Repository } from 'typeorm';
+import { UsedRefreshCreateInput } from './dto/used-refresh.input';
+import * as jwt from 'jsonwebtoken';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(UsedRefresh)
+    private readonly repository: Repository<UsedRefresh>,
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
+
+  async createUsedRefresh(input: UsedRefreshCreateInput) {
+    return this.repository.save(input);
+  }
+
+  async isTokenExpired(token: string) {
+    try {
+      <jwt.JwtPayload>jwt.verify(token, jwtConstants.secret);
+    } catch (error) {
+      return true;
+    }
+  }
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
@@ -21,19 +42,15 @@ export class AuthService {
     return null;
   }
 
-  async validRefresh(context) {
-    console.log(context.req);
+  async verifyToken(token: string) {
+    const refreshToken = await this.repository.findOneBy({ token });
+    if (refreshToken) throw new UnauthorizedException('Invalid token');
 
-    const payload = {
-      id: context.req.user.userId,
-      email: context.req.user.email,
-    };
-    const refreshToken = context.req
-      .get('Authorization')
-      .replace('Bearer', '')
-      .trim();
-
-    return { ...payload, refreshToken };
+    try {
+      return this.jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedException('token expired');
+    }
   }
 
   async login(user: Partial<User>): Promise<SingIn> {
@@ -41,7 +58,21 @@ export class AuthService {
 
     return {
       user_id: user.id,
-      access_token: this.jwtService.sign(payload),
+      token_type: 'Bearer',
+      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      expires_in: 3600,
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+    };
+  }
+
+  async generateTokens(user: Partial<User>): Promise<AuthTokens> {
+    const payload = { email: user.email, id: user.id };
+
+    return {
+      token_type: 'Bearer',
+      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      expires_in: 3600,
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 }

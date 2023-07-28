@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { ExtractJwt } from 'passport-jwt';
 import { jwtConstants } from '../constants';
+import { Context } from '@nestjs/graphql';
 
 @Injectable()
 export class JWTRefreshStrategy extends PassportStrategy(
@@ -14,13 +15,11 @@ export class JWTRefreshStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.refreshSecret,
+      secretOrKey: jwtConstants.secret,
     });
   }
 
   async validate(payload: any): Promise<any> {
-    console.log('valid');
-
     return { userId: payload.id, email: payload.email };
   }
 

@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
-import { UseGuards } from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { SingIn } from './entities/sign-in.entity';
 import { SingUp } from './entities/sign-up.entity';
 import { SignInInput } from './dto/sign-in.input';
@@ -9,10 +9,10 @@ import { LocalGuard } from './guards/LocalGuard';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { SignUpInput } from './dto/sign-up.input';
-import { RefreshGuard } from './guards/RefreshGuard';
+import { AuthTokens } from './entities/auth-tokens.entity';
 
 @Resolver(() => Auth)
-export class Auth1Resolver {
+export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
@@ -24,10 +24,17 @@ export class Auth1Resolver {
     return this.authService.validateUser(input.email, input.password);
   }
 
-  @UseGuards(RefreshGuard)
-  @Mutation(() => SingIn, { name: 'RefreshToken' })
-  refreshToken(@Context() context) {
-    return this.authService.validRefresh(context);
+  @Mutation(() => AuthTokens)
+  async refreshToken(@Args('token') refreshToken: string) {
+    const payload = await this.authService.verifyToken(refreshToken);
+    if (!payload) throw new UnauthorizedException('Invalid token');
+
+    const user = await this.userService.findOne(payload.id);
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const tokens = this.authService.generateTokens(user);
+    this.authService.createUsedRefresh({ token: refreshToken });
+    return tokens;
   }
 
   @Mutation(() => SingUp, { name: 'SignUp' })
