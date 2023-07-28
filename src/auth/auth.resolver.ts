@@ -25,8 +25,17 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthTokens)
-  async refreshToken(@Args('token') refreshToken: string) {
-    const payload = await this.authService.verifyToken(refreshToken);
+  async refreshToken(
+    @Context() context,
+    @Args('token', { nullable: true }) refreshToken: string,
+  ) {
+    const headerToken = context.req
+      .get('Authorization')
+      ?.replace('Bearer ', '');
+
+    const payload = await this.authService.verifyToken(
+      headerToken || refreshToken,
+    );
     if (!payload) throw new UnauthorizedException('Invalid token');
 
     const user = await this.userService.findOne(payload.id);
