@@ -11,10 +11,10 @@ import {
 @ObjectType()
 export class Category {
   @PrimaryGeneratedColumn()
-  @Field((type) => Int)
+  @Field(() => Int)
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   @Field({ nullable: false })
   name: string;
 

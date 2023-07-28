@@ -3,20 +3,31 @@ import { CategoryService } from './category.service';
 import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
-import { Categories } from './entities/categories.entity';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
 @Resolver(() => Category)
 export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @UseGuards(JWTGuard)
   @Mutation(() => Category)
-  createCategory(@Args('input') createCategoryInput: CreateCategoryInput) {
-    return this.categoryService.create(createCategoryInput);
+  createCategory(@Args('input') input: CreateCategoryInput) {
+    return this.categoryService.create(input);
   }
 
   @Query(() => [Category], { name: 'categories' })
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.categoryService.findAll(page, perPage, where, orderBy);
   }
 
   @Query(() => Category, { name: 'category' })
@@ -24,16 +35,20 @@ export class CategoryResolver {
     return this.categoryService.findOne(id);
   }
 
+  @UseGuards(JWTGuard)
   @Mutation(() => Category)
   updateCategory(
-    @Args('input') updateCategoryInput: UpdateCategoryInput,
+    @Args('input') input: UpdateCategoryInput,
     @Args('id', { type: () => Int }) id: number,
   ) {
-    return this.categoryService.update(id, updateCategoryInput);
+    return this.categoryService.update(id, input);
   }
 
   @Mutation(() => Category)
-  removeCategory(@Args('id', { type: () => Int }) id: number) {
-    return this.categoryService.remove(id);
+  async deleteCategory(@Args('id', { type: () => Int }) id: number) {
+    await this.categoryService.remove(id);
+    return {
+      id,
+    };
   }
 }
