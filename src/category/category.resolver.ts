@@ -3,17 +3,16 @@ import { CategoryService } from './category.service';
 import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
-import { Categories } from './entities/categories.entity';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
-@UseGuards(JWTGuard)
 @Resolver(() => Category)
 export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @UseGuards(JWTGuard)
   @Mutation(() => Category)
   createCategory(@Args('input') input: CreateCategoryInput) {
     return this.categoryService.create(input);
@@ -36,6 +35,7 @@ export class CategoryResolver {
     return this.categoryService.findOne(id);
   }
 
+  @UseGuards(JWTGuard)
   @Mutation(() => Category)
   updateCategory(
     @Args('input') input: UpdateCategoryInput,

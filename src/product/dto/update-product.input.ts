@@ -1,5 +1,5 @@
 import { CreateProductInput } from './create-product.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { InputType, Field, Int, PartialType, Float } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateProductInput {
@@ -9,10 +9,10 @@ export class UpdateProductInput {
   @Field({ nullable: true })
   description: string;
 
-  @Field({ nullable: true })
+  @Field(() => Float, { nullable: true })
   price: number;
 
-  @Field({ nullable: true })
+  @Field(() => Float, { nullable: true })
   old_price: number;
 
   @Field({ nullable: true })

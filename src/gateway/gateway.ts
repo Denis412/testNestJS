@@ -1,4 +1,4 @@
-import { OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -6,6 +6,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { CreateMessageInput } from 'src/message/dto/create-message.input';
+import { MessageService } from 'src/message/message.service';
 
 @WebSocketGateway({
   cors: {
@@ -16,6 +18,8 @@ export class myGateway implements OnModuleInit {
   @WebSocketServer()
   server: Server;
 
+  constructor(private readonly messageService: MessageService) {}
+
   onModuleInit() {
     this.server.on('connection', (socket) => {
       console.log('socket connect');
@@ -23,9 +27,23 @@ export class myGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('newMessage')
-  onNewMessage(@MessageBody() body: any) {
+  async onNewMessage(@MessageBody() body: any) {
+    const input: CreateMessageInput = {
+      text: body.text,
+      sender: {
+        id: parseInt(body.sender.id),
+      },
+      recipient: {
+        id: parseInt(body.recipient.id),
+      },
+      chat: {
+        id: parseInt(body.chat.id),
+      },
+    };
+
     console.log(body);
 
     this.server.emit('message', body);
+    await this.messageService.create(input);
   }
 }

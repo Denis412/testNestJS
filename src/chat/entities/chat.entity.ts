@@ -26,6 +26,9 @@ export class Chat {
   @JoinColumn({ name: 'buyer_id' })
   buyer: User;
 
+  @Column({ default: false, nullable: false })
+  hided: boolean;
+
   @Field({ nullable: true })
   @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'saller_id' })

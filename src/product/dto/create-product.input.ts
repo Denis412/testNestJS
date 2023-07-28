@@ -1,4 +1,4 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Int, Field, Float } from '@nestjs/graphql';
 import { RelationSingleInput } from 'src/inputs/relation-single.entity';
 
 @InputType()
@@ -12,10 +12,10 @@ export class CreateProductInput {
   @Field({ nullable: false })
   description: string;
 
-  @Field({ nullable: false })
+  @Field(() => Float, { nullable: false })
   price: number;
 
-  @Field({ nullable: true })
+  @Field(() => Float, { nullable: true })
   old_price: number;
 
   @Field({ nullable: true })

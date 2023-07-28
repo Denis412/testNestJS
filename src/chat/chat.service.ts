@@ -42,11 +42,16 @@ export class ChatService {
       };
     }
 
-    return this.repository.find(input);
+    return this.repository.find({
+      where: {
+        ...input.where,
+        hided: false,
+      },
+    });
   }
 
   findOne(id: number) {
-    return this.repository.findOneBy({ id });
+    return this.repository.findOneBy({ id, hided: false });
   }
 
   async update(id: number, updateChatInput: UpdateChatInput) {
@@ -55,6 +60,6 @@ export class ChatService {
   }
 
   async remove(id: number) {
-    await this.repository.delete(id);
+    await this.repository.save({ hided: true, id });
   }
 }

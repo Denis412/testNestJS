@@ -18,6 +18,7 @@ async function bootstrap() {
     origin: ['http://localhost:8080', 'http://localhost:8081'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Здесь указываются разрешенные HTTP методы
     allowedHeaders: 'Content-Type, Accept, Authorization', // Здесь указываются разрешенные заголовки запроса
+    credentials: true,
   });
 
   await app.listen(3000);

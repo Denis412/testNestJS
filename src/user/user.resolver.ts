@@ -4,7 +4,10 @@ import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/update-user.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
 
+@UseGuards(JWTGuard)
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}

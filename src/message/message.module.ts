@@ -7,5 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([Message])],
   providers: [MessageResolver, MessageService],
+  exports: [MessageService],
 })
 export class MessageModule {}
