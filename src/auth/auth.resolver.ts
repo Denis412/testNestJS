@@ -48,9 +48,12 @@ export class AuthResolver {
     if (!user) throw new UnauthorizedException('User not found');
 
     const tokens = this.authService.generateTokens(user);
-    await this.authService.createUsedRefresh({
-      token: headerToken || refreshToken,
-    });
+
+    if (refreshToken)
+      await this.authService.createUsedRefresh({
+        token: refreshToken,
+      });
+
     return tokens;
   }
 

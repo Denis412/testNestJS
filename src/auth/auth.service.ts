@@ -44,7 +44,7 @@ export class AuthService {
 
   async verifyToken(token: string) {
     const refreshToken = await this.repository.findOneBy({ token });
-    if (refreshToken) throw new UnauthorizedException('Invalid token');
+    if (refreshToken) throw new UnauthorizedException('Token is banned');
 
     try {
       return this.jwtService.verify(token);

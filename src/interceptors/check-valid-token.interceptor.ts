@@ -35,13 +35,16 @@ export class CheckValidTokenInterceptor implements NestInterceptor {
     const tokenInformation = <jwt.JwtPayload>(
       jwt.verify(token, jwtConstants.secret)
     );
+
     if (!tokenInformation) throw new Error('Invalid token');
 
     const findRefresh = await this.repository.findOneBy({ token });
     if (findRefresh) throw new UnauthorizedException('Token is banned');
 
-    if (tokenInformation.refresh) await this.repository.save({ token });
-
-    return next.handle();
+    return next.handle().pipe(
+      tap(async () => {
+        if (tokenInformation.refresh) await this.repository.save({ token });
+      }),
+    );
   }
 }
