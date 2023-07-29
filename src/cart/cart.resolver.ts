@@ -7,6 +7,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorCart } from './entities/paginator.entity';
 
 @UseGuards(JWTGuard)
 @Resolver(() => Cart)
@@ -28,6 +29,18 @@ export class CartResolver {
     orderBy: PaginatorOrderBy,
   ) {
     return this.cartService.findAll(page, perPage, where, orderBy);
+  }
+
+  @Query(() => PaginatorCart, { name: 'paginateCarts' })
+  getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy: PaginatorOrderBy,
+  ) {
+    return this.cartService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => Cart, { name: 'cart' })

@@ -6,6 +6,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorUser } from './entities/paginator.entity';
 
 @UseGuards(JWTGuard)
 @Resolver(() => User)
@@ -22,6 +23,18 @@ export class UserResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.userService.findAll(where, orderBy);
+  }
+
+  @Query(() => PaginatorUser, { name: 'paginateUsers' })
+  getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.userService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => User, { name: 'user' })

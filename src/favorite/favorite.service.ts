@@ -6,6 +6,7 @@ import { Favorite } from './entities/favorite.entity';
 import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class FavoriteService {
@@ -36,6 +37,25 @@ export class FavoriteService {
       };
 
     return this.repository.find(input);
+  }
+
+  async getAllWithPaginate(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    try {
+      return await getPaginatorResults<Favorite>(
+        this.repository,
+        page,
+        perPage,
+        where,
+        orderBy,
+      );
+    } catch (e) {
+      throw new Error('Invalid data');
+    }
   }
 
   findOne(id: number) {

@@ -7,6 +7,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorFavorite } from './entities/paginator.entity';
 
 @UseGuards(JWTGuard)
 @Resolver(() => Favorite)
@@ -28,6 +29,23 @@ export class FavoriteResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.favoriteService.findAll(page, perPage, where, orderBy);
+  }
+
+  @Query(() => PaginatorFavorite, { name: 'paginateFavorites' })
+  getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.favoriteService.getAllWithPaginate(
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   @Query(() => Favorite, { name: 'favorite' })

@@ -16,6 +16,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorChat } from './entities/paginator.entity';
 
 @UseGuards(JWTGuard)
 @Resolver(() => Chat)
@@ -40,6 +41,18 @@ export class ChatResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.chatService.findAll(page, perPage, where, orderBy);
+  }
+
+  @Query(() => PaginatorChat, { name: 'paginateChats' })
+  getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.chatService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => Chat, { name: 'chat' })

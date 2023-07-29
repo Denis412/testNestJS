@@ -7,6 +7,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorCategory } from './entities/paginator.entity';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -28,6 +29,23 @@ export class CategoryResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.categoryService.findAll(page, perPage, where, orderBy);
+  }
+
+  @Query(() => PaginatorCategory, { name: 'paginateCategories' })
+  getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.categoryService.getAllWithPaginate(
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   @Query(() => Category, { name: 'category' })

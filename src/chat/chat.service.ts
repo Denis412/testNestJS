@@ -6,6 +6,7 @@ import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class ChatService {
@@ -48,6 +49,25 @@ export class ChatService {
         hided: false,
       },
     });
+  }
+
+  async getAllWithPaginate(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    try {
+      return await getPaginatorResults<Chat>(
+        this.repository,
+        page,
+        perPage,
+        where,
+        orderBy,
+      );
+    } catch (e) {
+      throw new Error('Invalid data');
+    }
   }
 
   findOne(id: number) {

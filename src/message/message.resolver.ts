@@ -15,6 +15,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { PaginatorMessage } from './entities/paginator.entity';
 
 @UseGuards(JWTGuard)
 @Resolver(() => Message)
@@ -36,6 +37,23 @@ export class MessageResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.messageService.findAll(page, perPage, where, orderBy);
+  }
+
+  @Query(() => PaginatorMessage, { name: 'paginateMessages' })
+  async getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return await this.messageService.getAllWithPaginate(
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   @Query(() => Message, { name: 'message' })

@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { PaginatorProduct } from './entities/paginator.entity';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -28,6 +29,23 @@ export class ProductResolver {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.productService.findAll(where, orderBy);
+  }
+
+  @Query(() => PaginatorProduct, { name: 'paginateProducts' })
+  async getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.productService.getAllWithPagination(
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   @Query(() => Product, { name: 'product' })

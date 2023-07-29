@@ -6,6 +6,7 @@ import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class MessageService {
@@ -43,6 +44,25 @@ export class MessageService {
     }
 
     return this.repository.find(input);
+  }
+
+  async getAllWithPaginate(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    try {
+      return await getPaginatorResults<Message>(
+        this.repository,
+        page,
+        perPage,
+        where,
+        orderBy,
+      );
+    } catch (e) {
+      throw new Error('Invalid data');
+    }
   }
 
   findOne(id: number) {

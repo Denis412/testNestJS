@@ -3,9 +3,12 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { Repository, ILike, Not } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { paginate } from 'nestjs-typeorm-paginate';
+import { PaginationInfo } from 'src/pagination/dto/paginator-info.dto';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class ProductService {
@@ -38,6 +41,21 @@ export class ProductService {
     }
 
     return this.repository.find(input);
+  }
+
+  async getAllWithPagination(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    return await getPaginatorResults<Product>(
+      this.repository,
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   findOne(id: number) {

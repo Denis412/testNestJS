@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,21 @@ export class UserService {
 
   findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     return this.repository.find();
+  }
+
+  async getAllWithPaginate(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    return await getPaginatorResults<User>(
+      this.repository,
+      page,
+      perPage,
+      where,
+      orderBy,
+    );
   }
 
   findOne(id: number) {

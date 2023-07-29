@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class CategoryService {
@@ -25,6 +26,25 @@ export class CategoryService {
     orderBy?: PaginatorOrderBy,
   ) {
     return this.repository.find();
+  }
+
+  async getAllWithPaginate(
+    page: number,
+    perPage: number,
+    where: PaginatorWhere,
+    orderBy: PaginatorOrderBy,
+  ) {
+    try {
+      return await getPaginatorResults<Category>(
+        this.repository,
+        page,
+        perPage,
+        where,
+        orderBy,
+      );
+    } catch (e) {
+      throw new Error('Invalid data');
+    }
   }
 
   findOne(id: number) {
