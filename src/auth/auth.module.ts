@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SingIn } from './entities/sign-in.entity';
 import { UsedRefresh } from './entities/used-refresh.entity';
 import { JWTRefreshStrategy } from './strategies/refresh.strategy';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [

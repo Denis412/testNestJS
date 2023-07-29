@@ -33,8 +33,10 @@ export class CartResolver {
 
   @Query(() => PaginatorCart, { name: 'paginateCarts' })
   getAllWithPaginate(
-    @Args('page', { type: () => Int, nullable: true }) page: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
+    page: number,
+    @Args('perPage', { type: () => Int, nullable: true, defaultValue: 50 })
+    perPage: number,
     @Args('where', { type: () => PaginatorWhere, nullable: true })
     where: PaginatorWhere,
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })

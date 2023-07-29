@@ -61,7 +61,10 @@ export class AuthService {
       token_type: 'Bearer',
       access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
       expires_in: 3600,
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      refresh_token: this.jwtService.sign(
+        { ...payload, refresh: true },
+        { expiresIn: '7d' },
+      ),
     };
   }
 
@@ -72,7 +75,10 @@ export class AuthService {
       token_type: 'Bearer',
       access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
       expires_in: 3600,
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      refresh_token: this.jwtService.sign(
+        { ...payload, refresh: true },
+        { expiresIn: '7d' },
+      ),
     };
   }
 }

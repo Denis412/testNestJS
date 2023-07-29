@@ -33,12 +33,14 @@ export class ChatResolver {
 
   @Query(() => [Chat], { name: 'chats' })
   findAll(
-    @Args('page', { type: () => Int, nullable: true }) page?: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
+    @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
+    page: number,
+    @Args('perPage', { type: () => Int, nullable: true, defaultValue: 50 })
+    perPage: number,
     @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere,
+    where: PaginatorWhere,
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy,
+    orderBy: PaginatorOrderBy,
   ) {
     return this.chatService.findAll(page, perPage, where, orderBy);
   }

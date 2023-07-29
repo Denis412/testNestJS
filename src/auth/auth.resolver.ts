@@ -1,7 +1,11 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { SingIn } from './entities/sign-in.entity';
 import { SingUp } from './entities/sign-up.entity';
 import { SignInInput } from './dto/sign-in.input';
@@ -10,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { SignUpInput } from './dto/sign-up.input';
 import { AuthTokens } from './entities/auth-tokens.entity';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -25,6 +30,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthTokens)
+  @UseInterceptors(CheckValidTokenInterceptor)
   async refreshToken(
     @Context() context,
     @Args('token', { nullable: true }) refreshToken: string,
@@ -42,7 +48,9 @@ export class AuthResolver {
     if (!user) throw new UnauthorizedException('User not found');
 
     const tokens = this.authService.generateTokens(user);
-    this.authService.createUsedRefresh({ token: refreshToken });
+    await this.authService.createUsedRefresh({
+      token: headerToken || refreshToken,
+    });
     return tokens;
   }
 
