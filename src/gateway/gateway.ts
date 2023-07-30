@@ -41,8 +41,6 @@ export class myGateway implements OnModuleInit {
       },
     };
 
-    console.log(body);
-
     this.server.emit('message', body);
     await this.messageService.create(input);
   }

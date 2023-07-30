@@ -14,11 +14,13 @@ import { UpdateChatInput } from './dto/update-chat.input';
 import { UserService } from 'src/user/user.service';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorChat } from './entities/paginator.entity';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
 @UseGuards(JWTGuard)
+@UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Chat)
 export class ChatResolver {
   constructor(

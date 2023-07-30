@@ -5,15 +5,17 @@ import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorCategory } from './entities/paginator.entity';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
 @Resolver(() => Category)
 export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
 
   @UseGuards(JWTGuard)
+  @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
   createCategory(@Args('input') input: CreateCategoryInput) {
     return this.categoryService.create(input);
@@ -56,6 +58,7 @@ export class CategoryResolver {
   }
 
   @UseGuards(JWTGuard)
+  @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
   updateCategory(
     @Args('input') input: UpdateCategoryInput,
@@ -64,6 +67,8 @@ export class CategoryResolver {
     return this.categoryService.update(id, input);
   }
 
+  @UseGuards(JWTGuard)
+  @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
   async deleteCategory(@Args('id', { type: () => Int }) id: number) {
     await this.categoryService.remove(id);

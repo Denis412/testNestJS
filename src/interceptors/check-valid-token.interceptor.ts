@@ -27,7 +27,10 @@ export class CheckValidTokenInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<any>> {
     const headers = context.getArgs()[2].req.rawHeaders;
-    const token = headers[headers.indexOf('Authorization') + 1].replace(
+    const auth = headers.indexOf('Authorization');
+    const auth1 = headers.indexOf('authorization');
+
+    const token = headers[auth !== -1 ? auth + 1 : auth1 + 1].replace(
       'Bearer ',
       '',
     );

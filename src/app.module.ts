@@ -23,8 +23,6 @@ import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CheckValidTokenInterceptor } from './interceptors/check-valid-token.interceptor';
 
 @Module({
   imports: [

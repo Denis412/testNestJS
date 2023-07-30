@@ -5,11 +5,13 @@ import { CreateFavoriteInput } from './dto/create-favorite.input';
 import { UpdateFavoriteInput } from './dto/update-favorite.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorFavorite } from './entities/paginator.entity';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
 @UseGuards(JWTGuard)
+@UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Favorite)
 export class FavoriteResolver {
   constructor(private readonly favoriteService: FavoriteService) {}

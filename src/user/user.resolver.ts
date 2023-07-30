@@ -4,11 +4,13 @@ import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/update-user.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorUser } from './entities/paginator.entity';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
 @UseGuards(JWTGuard)
+@UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
