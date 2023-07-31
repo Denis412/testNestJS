@@ -5,9 +5,14 @@ import { Chat } from './entities/chat.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
 import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chat, UsedRefresh]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Chat, UsedRefresh]),
+    UserModule,
+    JwtModule,
+  ],
   providers: [ChatResolver, ChatService],
 })
 export class ChatModule {}

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -23,6 +23,8 @@ import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
+import { JwtService } from '@nestjs/jwt';
+import { AuthenticationMiddleware } from './middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -64,6 +66,10 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
     WebsocketsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthenticationMiddleware).forRoutes('*');
+  }
+}

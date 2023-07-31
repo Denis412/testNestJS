@@ -6,11 +6,11 @@ import { UpdateCartInput } from './dto/update-cart.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorCart } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 
-@UseGuards(JWTGuard)
+@UseGuards(AuthenticationGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Cart)
 export class CartResolver {

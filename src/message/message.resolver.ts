@@ -14,11 +14,11 @@ import { UpdateMessageInput } from './dto/update-message.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 import { PaginatorMessage } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
-@UseGuards(JWTGuard)
+@UseGuards(AuthenticationGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Message)
 export class MessageResolver {

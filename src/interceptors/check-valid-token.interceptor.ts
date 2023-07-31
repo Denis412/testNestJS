@@ -14,6 +14,7 @@ import { jwtConstants } from 'src/auth/constants';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class CheckValidTokenInterceptor implements NestInterceptor {
@@ -26,20 +27,22 @@ export class CheckValidTokenInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const headers = context.getArgs()[2].req.rawHeaders;
-    const auth = headers.indexOf('Authorization');
-    const auth1 = headers.indexOf('authorization');
+    const gqlContext = GqlExecutionContext.create(context);
+    const token = gqlContext
+      .getContext()
+      .req.get('Authorization')
+      .replace('Bearer ', '');
 
-    const token = headers[auth !== -1 ? auth + 1 : auth1 + 1].replace(
-      'Bearer ',
-      '',
+    const isRefresh = /refreshToken/.test(
+      gqlContext.getContext().req.body.query,
     );
 
     const tokenInformation = <jwt.JwtPayload>(
       jwt.verify(token, jwtConstants.secret)
     );
 
-    if (!tokenInformation) throw new Error('Invalid token');
+    if (isRefresh && !tokenInformation.refresh)
+      throw new UnauthorizedException('Invalid token');
 
     const findRefresh = await this.repository.findOneBy({ token });
     if (findRefresh) throw new UnauthorizedException('Token is banned');

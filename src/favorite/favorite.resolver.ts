@@ -6,11 +6,11 @@ import { UpdateFavoriteInput } from './dto/update-favorite.input';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorFavorite } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 
-@UseGuards(JWTGuard)
+@UseGuards(AuthenticationGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Favorite)
 export class FavoriteResolver {

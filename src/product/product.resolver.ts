@@ -4,17 +4,17 @@ import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { PaginatorProduct } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 
 @Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(JWTGuard)
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Product)
   createProduct(@Args('input') createProductInput: CreateProductInput) {
@@ -59,7 +59,7 @@ export class ProductResolver {
     return this.productService.findOne(id);
   }
 
-  @UseGuards(JWTGuard)
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Product)
   updateProduct(
@@ -70,7 +70,7 @@ export class ProductResolver {
     return this.productService.update(id, updateProductInput);
   }
 
-  @UseGuards(JWTGuard)
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Product)
   async deleteProduct(@Args('id', { type: () => Int }) id: number) {
