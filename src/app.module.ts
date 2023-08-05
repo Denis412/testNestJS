@@ -19,10 +19,12 @@ import { Cart } from './cart/entities/cart.entity';
 import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
+import { File } from './file/entities/file.entity';
 import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
         Message,
         Chat,
         UsedRefresh,
+        File,
       ],
       synchronize: true,
       autoLoadEntities: true,
@@ -62,6 +65,7 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
     AuthModule,
     GatewayModule,
     WebsocketsModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
