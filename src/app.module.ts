@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -29,10 +29,11 @@ import { FileModule } from './file/file.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: true,
+      uploads: false,
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -71,3 +72,4 @@ import { FileModule } from './file/file.module';
   providers: [AppService],
 })
 export class AppModule {}
+
