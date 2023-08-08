@@ -8,21 +8,20 @@ function generateWhere(where: PaginatorWhere | PaginatorWhere[]) {
   const filters = [];
   const newWhere = Array.isArray(where) ? where : [where];
 
-  if(!Array.isArray(where) && where.and) {
+  if (!Array.isArray(where) && where.and) {
     filters.push({});
 
-    for(const item of generateWhere(where.and)) {
+    for (const item of generateWhere(where.and)) {
       filters.at(-1)[Object.keys(item)[0]] = Object.values(item)[0];
     }
   }
 
-  if(!Array.isArray(where) && where.or) {
+  if (!Array.isArray(where) && where.or) {
     filters.push([]);
 
-    for(const item of generateWhere(where.or)) {
+    for (const item of generateWhere(where.or)) {
       filters.at(-1).push(item);
     }
-
   }
 
   newWhere.forEach(({ column, operator, value }) => {
@@ -55,9 +54,6 @@ export default async function getPaginatorResults<T>(
   // const newWhere = [where];
   const newOrderBy = [orderBy];
 
-  console.log("where", where);
-  
-
   filters = generateWhere(where);
 
   // if (where) {
@@ -77,9 +73,6 @@ export default async function getPaginatorResults<T>(
   //     }
   //   });
   // }
-
-  console.log("filters", filters);
-  
 
   const paginationResult = await paginate<T>(
     repository,
@@ -105,8 +98,7 @@ export default async function getPaginatorResults<T>(
     page: paginationResult.meta.currentPage,
     perPage: paginationResult.meta.itemsPerPage,
     count: paginationResult.meta.totalItems,
-    hasMorePages:
-      paginationResult.meta.totalPages > paginationResult.meta.currentPage,
+    hasMorePages: paginationResult.meta.totalPages > paginationResult.meta.currentPage,
     totalPages: paginationResult.meta.totalPages,
   };
 
