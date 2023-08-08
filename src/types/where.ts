@@ -3,12 +3,18 @@ import { PaginatorWhereOperator } from './paginator-where-operator';
 
 @InputType()
 export default class PaginatorWhere {
-  @Field()
+  @Field({ nullable: true })
   column: string;
 
-  @Field(() => PaginatorWhereOperator)
+  @Field(() => PaginatorWhereOperator, { nullable: true })
   operator: PaginatorWhereOperator;
 
-  @Field()
+  @Field({ nullable: true })
   value: string;
+
+  @Field(() => [PaginatorWhere], { nullable: true })
+  or?: PaginatorWhere[];
+
+  @Field(() => [PaginatorWhere], { nullable: true })
+  and?: PaginatorWhere[];
 }

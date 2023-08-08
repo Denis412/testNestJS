@@ -4,6 +4,46 @@ import { ILike, Not, Repository } from 'typeorm';
 import { paginate } from 'nestjs-typeorm-paginate';
 import { PaginationInfo } from './dto/paginator-info.dto';
 
+function generateWhere(where: PaginatorWhere | PaginatorWhere[]) {
+  const filters = [];
+  const newWhere = Array.isArray(where) ? where : [where];
+
+  if(!Array.isArray(where) && where.and) {
+    filters.push({});
+
+    for(const item of generateWhere(where.and)) {
+      filters.at(-1)[Object.keys(item)[0]] = Object.values(item)[0];
+    }
+  }
+
+  if(!Array.isArray(where) && where.or) {
+    filters.push([]);
+
+    for(const item of generateWhere(where.or)) {
+      filters.at(-1).push(item);
+    }
+
+  }
+
+  newWhere.forEach(({ column, operator, value }) => {
+    switch (operator) {
+      case 'EQ':
+        filters.push({ [column]: value });
+        break;
+      case 'NEQ':
+        filters.push({ [column]: Not(value) });
+        break;
+      case 'FTS':
+        filters.push({ [column]: ILike(`%${value}%`) });
+        break;
+      default:
+        break;
+    }
+  });
+
+  return filters;
+}
+
 export default async function getPaginatorResults<T>(
   repository: Repository<T>,
   page: number,
@@ -11,27 +51,35 @@ export default async function getPaginatorResults<T>(
   where: PaginatorWhere,
   orderBy: PaginatorOrderBy,
 ) {
-  const filters = [];
-  const newWhere = [where];
+  let filters = [];
+  // const newWhere = [where];
   const newOrderBy = [orderBy];
 
-  if (where) {
-    newWhere.forEach(({ column, operator, value }) => {
-      switch (operator) {
-        case 'EQ':
-          filters.push({ [column]: value });
-          break;
-        case 'NEQ':
-          filters.push({ [column]: Not(value) });
-          break;
-        case 'FTS':
-          filters.push({ [column]: ILike(`%${value}%`) });
-          break;
-        default:
-          break;
-      }
-    });
-  }
+  console.log("where", where);
+  
+
+  filters = generateWhere(where);
+
+  // if (where) {
+  //   newWhere.forEach(({ column, operator, value }) => {
+  //     switch (operator) {
+  //       case 'EQ':
+  //         filters.push({ [column]: value });
+  //         break;
+  //       case 'NEQ':
+  //         filters.push({ [column]: Not(value) });
+  //         break;
+  //       case 'FTS':
+  //         filters.push({ [column]: ILike(`%${value}%`) });
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   });
+  // }
+
+  console.log("filters", filters);
+  
 
   const paginationResult = await paginate<T>(
     repository,
@@ -40,7 +88,7 @@ export default async function getPaginatorResults<T>(
       limit: perPage || 50,
     },
     {
-      where: filters.length ? filters : {},
+      where: filters,
       order: orderBy
         ? newOrderBy.reduce(
             (acc, { column, order }) => ({
