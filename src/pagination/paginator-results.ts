@@ -11,18 +11,41 @@ function generateWhere(where: PaginatorWhere | PaginatorWhere[]) {
   if (!Array.isArray(where) && where.and) {
     filters.push({});
 
-    for (const item of generateWhere(where.and)) {
-      filters.at(-1)[Object.keys(item)[0]] = Object.values(item)[0];
+    if (where.and.find((wh) => wh.and)) {
+      for (const andWhere of where.and) {
+        const andGenerated = generateWhere(andWhere);
+        const obj = Object.values(andGenerated)[0];
+
+        filters[filters.length - 1] = {
+          ...filters[filters.length - 1],
+          [Object.keys(obj)[0]]: Object.values(obj)[0],
+        };
+      }
     }
+    if (where.and.find((wh) => wh.or)) {
+      for (const orWhere of where.and) {
+        const orGenerated = generateWhere(orWhere);
+
+        filters[filters.length - 1] = [...[filters[filters.length - 1]], orGenerated[0]];
+      }
+    } else
+      for (const item of generateWhere(where.and)) {
+        filters.at(-1)[Object.keys(item)[0]] = Object.values(item)[0];
+      }
   }
 
   if (!Array.isArray(where) && where.or) {
     filters.push([]);
 
-    for (const item of generateWhere(where.or)) {
-      filters.at(-1).push(item);
-    }
+    if (where.or?.[0].and) filters.at(-1).push(generateWhere(where.or[0].and));
+    if (where.or?.[0].or) filters.at(-1).push(generateWhere(where.or[0].or));
+    else
+      for (const item of generateWhere(where.or)) {
+        filters.at(-1).push(item);
+      }
   }
+
+  console.log('filters', JSON.stringify(filters, null, 2));
 
   newWhere.forEach(({ column, operator, value }) => {
     switch (operator) {
