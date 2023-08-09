@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,10 +9,15 @@ import PaginatorOrderBy from 'src/types/orderBy';
 import { paginate } from 'nestjs-typeorm-paginate';
 import { PaginationInfo } from 'src/pagination/dto/paginator-info.dto';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectRepository(Product) private readonly repository: Repository<Product>) {}
+  constructor(
+    @InjectRepository(Product) private readonly repository: Repository<Product>,
+    private readonly userService: UserService,
+  ) {}
 
   create(createProductInput: CreateProductInput) {
     return this.repository.save(createProductInput);
@@ -52,6 +57,16 @@ export class ProductService {
   async update(id: number, updateProductInput: UpdateProductInput): Promise<Product> {
     const product = await this.repository.save({ ...updateProductInput, id });
     return this.repository.findOneBy({ id: product.id });
+  }
+
+  async getUserForProduct(productId: number): Promise<User> {
+    const product = await this.findOne(productId);
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    return this.userService.findOne(product.user.id);
   }
 
   remove(id: number) {

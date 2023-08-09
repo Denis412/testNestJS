@@ -7,9 +7,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, UsedRefresh])],
+  imports: [TypeOrmModule.forFeature([Product, UsedRefresh]), UserModule],
   providers: [ProductResolver, ProductService],
 })
 export class ProductModule {}

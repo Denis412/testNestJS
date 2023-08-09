@@ -3,12 +3,12 @@ import PaginatorWhere from 'src/types/where';
 import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { PaginationInfo } from './dto/paginator-info.dto';
 
-function buildCondition<T>(where: PaginatorWhere, qb: SelectQueryBuilder<T>, call?: string) {
+function buildCondition(where: PaginatorWhere, qb, entity: string, call?: string) {
   if (where?.and) {
     qb.andWhere(
       new Brackets((subQb) => {
         for (const part of where.and!) {
-          buildCondition(part, subQb, 'andWhere');
+          buildCondition(part, subQb, entity, 'andWhere');
         }
       }),
     );
@@ -16,17 +16,17 @@ function buildCondition<T>(where: PaginatorWhere, qb: SelectQueryBuilder<T>, cal
     qb.orWhere(
       new Brackets((subQb) => {
         for (const part of where.or!) {
-          buildCondition(part, subQb, 'orWhere');
+          buildCondition(part, subQb, entity, 'orWhere');
         }
       }),
     );
   } else {
     if (where?.operator === 'FTS') {
-      qb[call](`${where.column} LIKE '%${where.value}%'`);
+      qb[call](`${qb.alias}.${where.column} LIKE '%${where.value}%'`);
     } else if (where.operator === 'EQ') {
-      qb[call](`${where.column} = '${where.value}'`);
+      qb[call](`${qb.alias}.${where.column} = '${where.value}'`);
     } else if (where.operator === 'NEQ') {
-      qb[call](`${where.column} != '${where.value}'`);
+      qb[call](`${qb.alias}.${where.column} != '${where.value}'`);
     }
   }
 }
@@ -37,16 +37,21 @@ export default async function getPaginatorResults<T>(
   perPage: number,
   where: PaginatorWhere,
   orderBy: PaginatorOrderBy,
+  entity?: string,
 ) {
-  const query = repository.createQueryBuilder();
+  const query = repository.createQueryBuilder('product').leftJoinAndSelect('product.user', 'user');
+  console.log('query', query.getQuery());
 
-  if (where) buildCondition(where, query, 'orWhere');
-  if (orderBy) query.orderBy(`${orderBy.column}`, orderBy.order);
+  if (where) buildCondition(where, query, 'product', 'orWhere');
+  if (orderBy) query.orderBy(`product.${orderBy.column}`, orderBy.order);
 
   const [entities, totalElements] = await query
     .take(perPage)
     .skip((page - 1) * perPage)
+
     .getManyAndCount();
+
+  console.log('results', entities);
 
   const totalPages = Math.ceil(totalElements / perPage);
 

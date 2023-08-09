@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { ProductService } from './product.service';
 import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
@@ -9,6 +9,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { PaginatorProduct } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { User } from 'src/user/entities/user.entity';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -44,18 +45,11 @@ export class ProductResolver {
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
     orderBy?: PaginatorOrderBy,
   ) {
-    return this.productService.getAllWithPagination(
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+    return this.productService.getAllWithPagination(page, perPage, where, orderBy);
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<Product> | Promise<null> {
+  findOne(@Args('id', { type: () => Int }) id: number): Promise<Product> | Promise<null> {
     return this.productService.findOne(id);
   }
 
