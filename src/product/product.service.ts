@@ -12,9 +12,7 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectRepository(Product) private readonly repository: Repository<Product>,
-  ) {}
+  constructor(@InjectRepository(Product) private readonly repository: Repository<Product>) {}
 
   create(createProductInput: CreateProductInput) {
     return this.repository.save(createProductInput);
@@ -43,29 +41,15 @@ export class ProductService {
     return this.repository.find(input);
   }
 
-  async getAllWithPagination(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
-    return await getPaginatorResults<Product>(
-      this.repository,
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+  async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
+    return await getPaginatorResults<Product>(this.repository, page, perPage, where, orderBy);
   }
 
   findOne(id: number) {
     return this.repository.findOneBy({ id });
   }
 
-  async update(
-    id: number,
-    updateProductInput: UpdateProductInput,
-  ): Promise<Product> {
+  async update(id: number, updateProductInput: UpdateProductInput): Promise<Product> {
     const product = await this.repository.save({ ...updateProductInput, id });
     return this.repository.findOneBy({ id: product.id });
   }

@@ -1,69 +1,34 @@
 import PaginatorOrderBy from 'src/types/orderBy';
 import PaginatorWhere from 'src/types/where';
-import { ILike, Not, Repository } from 'typeorm';
-import { paginate } from 'nestjs-typeorm-paginate';
+import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
 import { PaginationInfo } from './dto/paginator-info.dto';
 
-function generateWhere(where: PaginatorWhere | PaginatorWhere[]) {
-  const filters = [];
-  const newWhere = Array.isArray(where) ? where : [where];
-
-  if (!Array.isArray(where) && where.and) {
-    filters.push({});
-
-    if (where.and.find((wh) => wh.and)) {
-      for (const andWhere of where.and) {
-        const andGenerated = generateWhere(andWhere);
-        const obj = Object.values(andGenerated)[0];
-
-        filters[filters.length - 1] = {
-          ...filters[filters.length - 1],
-          [Object.keys(obj)[0]]: Object.values(obj)[0],
-        };
-      }
+function buildCondition<T>(where: PaginatorWhere, qb: SelectQueryBuilder<T>, call?: string) {
+  if (where?.and) {
+    qb.andWhere(
+      new Brackets((subQb) => {
+        for (const part of where.and!) {
+          buildCondition(part, subQb, 'andWhere');
+        }
+      }),
+    );
+  } else if (where?.or) {
+    qb.orWhere(
+      new Brackets((subQb) => {
+        for (const part of where.or!) {
+          buildCondition(part, subQb, 'orWhere');
+        }
+      }),
+    );
+  } else {
+    if (where?.operator === 'FTS') {
+      qb[call](`${where.column} LIKE '%${where.value}%'`);
+    } else if (where.operator === 'EQ') {
+      qb[call](`${where.column} = '${where.value}'`);
+    } else if (where.operator === 'NEQ') {
+      qb[call](`${where.column} != '${where.value}'`);
     }
-    if (where.and.find((wh) => wh.or)) {
-      for (const orWhere of where.and) {
-        const orGenerated = generateWhere(orWhere);
-
-        filters[filters.length - 1] = [...[filters[filters.length - 1]], orGenerated[0]];
-      }
-    } else
-      for (const item of generateWhere(where.and)) {
-        filters.at(-1)[Object.keys(item)[0]] = Object.values(item)[0];
-      }
   }
-
-  if (!Array.isArray(where) && where.or) {
-    filters.push([]);
-
-    if (where.or?.[0].and) filters.at(-1).push(generateWhere(where.or[0].and));
-    if (where.or?.[0].or) filters.at(-1).push(generateWhere(where.or[0].or));
-    else
-      for (const item of generateWhere(where.or)) {
-        filters.at(-1).push(item);
-      }
-  }
-
-  console.log('filters', JSON.stringify(filters, null, 2));
-
-  newWhere.forEach(({ column, operator, value }) => {
-    switch (operator) {
-      case 'EQ':
-        filters.push({ [column]: value });
-        break;
-      case 'NEQ':
-        filters.push({ [column]: Not(value) });
-        break;
-      case 'FTS':
-        filters.push({ [column]: ILike(`%${value}%`) });
-        break;
-      default:
-        break;
-    }
-  });
-
-  return filters;
 }
 
 export default async function getPaginatorResults<T>(
@@ -73,60 +38,28 @@ export default async function getPaginatorResults<T>(
   where: PaginatorWhere,
   orderBy: PaginatorOrderBy,
 ) {
-  let filters = [];
-  // const newWhere = [where];
-  const newOrderBy = [orderBy];
+  const query = repository.createQueryBuilder();
 
-  filters = generateWhere(where);
+  if (where) buildCondition(where, query, 'orWhere');
+  if (orderBy) query.orderBy(`${orderBy.column}`, orderBy.order);
 
-  // if (where) {
-  //   newWhere.forEach(({ column, operator, value }) => {
-  //     switch (operator) {
-  //       case 'EQ':
-  //         filters.push({ [column]: value });
-  //         break;
-  //       case 'NEQ':
-  //         filters.push({ [column]: Not(value) });
-  //         break;
-  //       case 'FTS':
-  //         filters.push({ [column]: ILike(`%${value}%`) });
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   });
-  // }
+  const [entities, totalElements] = await query
+    .take(perPage)
+    .skip((page - 1) * perPage)
+    .getManyAndCount();
 
-  const paginationResult = await paginate<T>(
-    repository,
-    {
-      page: page || 1,
-      limit: perPage || 50,
-    },
-    {
-      where: filters,
-      order: orderBy
-        ? newOrderBy.reduce(
-            (acc, { column, order }) => ({
-              ...acc,
-              [column]: order,
-            }),
-            {},
-          )
-        : {},
-    },
-  );
+  const totalPages = Math.ceil(totalElements / perPage);
 
   const paginationMeta: PaginationInfo = {
-    page: paginationResult.meta.currentPage,
-    perPage: paginationResult.meta.itemsPerPage,
-    count: paginationResult.meta.totalItems,
-    hasMorePages: paginationResult.meta.totalPages > paginationResult.meta.currentPage,
-    totalPages: paginationResult.meta.totalPages,
+    page,
+    perPage,
+    count: totalElements,
+    hasMorePages: totalPages > page,
+    totalPages: totalPages,
   };
 
   return {
-    data: paginationResult.items,
+    data: entities,
     paginatorInfo: paginationMeta,
   };
 }

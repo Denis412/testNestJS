@@ -18,6 +18,8 @@ export class Product {
   @Field(() => Int)
   id: number;
 
+  static __typename: 'Product';
+
   @Column({ nullable: false })
   @Field({ nullable: false })
   title: string;
