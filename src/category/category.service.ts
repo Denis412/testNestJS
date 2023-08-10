@@ -19,29 +19,13 @@ export class CategoryService {
     return this.repository.save(createCategoryInput);
   }
 
-  findAll(
-    page?: number,
-    perPage?: number,
-    where?: PaginatorWhere,
-    orderBy?: PaginatorOrderBy,
-  ) {
+  findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     return this.repository.find();
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     try {
-      return await getPaginatorResults<Category>(
-        this.repository,
-        page,
-        perPage,
-        where,
-        orderBy,
-      );
+      return await getPaginatorResults<Category>(this.repository, page, perPage, where, orderBy, 'category');
     } catch (e) {
       throw new Error('Invalid data');
     }

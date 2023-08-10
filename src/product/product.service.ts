@@ -47,7 +47,7 @@ export class ProductService {
   }
 
   async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
-    return await getPaginatorResults<Product>(this.repository, page, perPage, where, orderBy);
+    return await getPaginatorResults<Product>(this.repository, page, perPage, where, orderBy, 'product');
   }
 
   findOne(id: number) {

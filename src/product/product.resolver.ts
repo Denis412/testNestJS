@@ -36,7 +36,7 @@ export class ProductResolver {
     return this.productService.findAll(where, orderBy);
   }
 
-  @Query(() => PaginatorProduct, { name: 'paginateProducts' })
+  @Query(() => PaginatorProduct, { name: 'paginateProduct' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage: number,

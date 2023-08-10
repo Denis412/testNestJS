@@ -10,20 +10,13 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class ChatService {
-  constructor(
-    @InjectRepository(Chat) private readonly repository: Repository<Chat>,
-  ) {}
+  constructor(@InjectRepository(Chat) private readonly repository: Repository<Chat>) {}
 
   create(createChatInput: CreateChatInput) {
     return this.repository.save(createChatInput);
   }
 
-  findAll(
-    page?: number,
-    perPage?: number,
-    where?: PaginatorWhere,
-    orderBy?: PaginatorOrderBy,
-  ) {
+  findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     const input = { where: null, order: null };
 
     if (where)
@@ -51,20 +44,9 @@ export class ChatService {
     });
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     try {
-      return await getPaginatorResults<Chat>(
-        this.repository,
-        page,
-        perPage,
-        where,
-        orderBy,
-      );
+      return await getPaginatorResults<Chat>(this.repository, page, perPage, where, orderBy, 'chat');
     } catch (e) {
       throw new Error('Invalid data');
     }

@@ -1,12 +1,4 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { MessageService } from './message.service';
 import { Message } from './entities/message.entity';
 import { CreateMessageInput } from './dto/create-message.input';
@@ -41,7 +33,7 @@ export class MessageResolver {
     return this.messageService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorMessage, { name: 'paginateMessages' })
+  @Query(() => PaginatorMessage, { name: 'paginateMessage' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -52,12 +44,7 @@ export class MessageResolver {
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
     orderBy: PaginatorOrderBy,
   ) {
-    return await this.messageService.getAllWithPaginate(
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+    return await this.messageService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => Message, { name: 'message' })
@@ -66,10 +53,7 @@ export class MessageResolver {
   }
 
   @Mutation(() => Message)
-  updateMessage(
-    @Args('input') updateMessageInput: UpdateMessageInput,
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  updateMessage(@Args('input') updateMessageInput: UpdateMessageInput, @Args('id', { type: () => Int }) id: number) {
     return this.messageService.update(id, updateMessageInput);
   }
 

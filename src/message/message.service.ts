@@ -10,20 +10,13 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class MessageService {
-  constructor(
-    @InjectRepository(Message) private readonly repository: Repository<Message>,
-  ) {}
+  constructor(@InjectRepository(Message) private readonly repository: Repository<Message>) {}
 
   create(createMessageInput: CreateMessageInput) {
     return this.repository.save(createMessageInput);
   }
 
-  findAll(
-    page?: number,
-    perPage?: number,
-    where?: PaginatorWhere,
-    orderBy?: PaginatorOrderBy,
-  ) {
+  findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     const input = { where: null, order: null };
 
     if (where)
@@ -46,20 +39,9 @@ export class MessageService {
     return this.repository.find(input);
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     try {
-      return await getPaginatorResults<Message>(
-        this.repository,
-        page,
-        perPage,
-        where,
-        orderBy,
-      );
+      return await getPaginatorResults<Message>(this.repository, page, perPage, where, orderBy, 'message');
     } catch (e) {
       throw new Error('Invalid data');
     }

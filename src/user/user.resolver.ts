@@ -27,7 +27,7 @@ export class UserResolver {
     return this.userService.findAll(where, orderBy);
   }
 
-  @Query(() => PaginatorUser, { name: 'paginateUsers' })
+  @Query(() => PaginatorUser, { name: 'paginateUser' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,

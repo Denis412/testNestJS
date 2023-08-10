@@ -11,9 +11,7 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly repository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private readonly repository: Repository<User>) {}
 
   async create(input: CreateUserInput) {
     const saltOrRounds = 10;
@@ -26,19 +24,8 @@ export class UserService {
     return this.repository.find();
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
-    return await getPaginatorResults<User>(
-      this.repository,
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
+    return await getPaginatorResults<User>(this.repository, page, perPage, where, orderBy, 'user');
   }
 
   findOne(id: number) {

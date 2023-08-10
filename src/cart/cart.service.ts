@@ -10,20 +10,13 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class CartService {
-  constructor(
-    @InjectRepository(Cart) private readonly repository: Repository<Cart>,
-  ) {}
+  constructor(@InjectRepository(Cart) private readonly repository: Repository<Cart>) {}
 
   create(createCartInput: CreateCartInput) {
     return this.repository.save(createCartInput);
   }
 
-  findAll(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  findAll(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     const input = { where: null, order: null };
 
     if (where)
@@ -46,20 +39,9 @@ export class CartService {
     return this.repository.find(input);
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     try {
-      return await getPaginatorResults<Cart>(
-        this.repository,
-        page,
-        perPage,
-        where,
-        orderBy,
-      );
+      return await getPaginatorResults<Cart>(this.repository, page, perPage, where, orderBy, 'cart');
     } catch (e) {
       throw new Error('Invalid data');
     }

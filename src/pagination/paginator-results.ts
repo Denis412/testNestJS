@@ -1,34 +1,46 @@
 import PaginatorOrderBy from 'src/types/orderBy';
 import PaginatorWhere from 'src/types/where';
-import { Brackets, Repository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityMetadata, Repository, SelectQueryBuilder } from 'typeorm';
 import { PaginationInfo } from './dto/paginator-info.dto';
 
 function buildCondition(where: PaginatorWhere, qb, entity: string, call?: string) {
   if (where?.and) {
     qb.andWhere(
       new Brackets((subQb) => {
-        for (const part of where.and!) {
-          buildCondition(part, subQb, entity, 'andWhere');
-        }
+        where.and.forEach((partWhere) => buildCondition(partWhere, subQb, entity, 'andWhere'));
       }),
     );
   } else if (where?.or) {
     qb.orWhere(
       new Brackets((subQb) => {
-        for (const part of where.or!) {
-          buildCondition(part, subQb, entity, 'orWhere');
-        }
+        where.and.forEach((partWhere) => buildCondition(partWhere, subQb, entity, 'orWhere'));
       }),
     );
   } else {
-    if (where?.operator === 'FTS') {
-      qb[call](`${qb.alias}.${where.column} LIKE '%${where.value}%'`);
-    } else if (where.operator === 'EQ') {
-      qb[call](`${qb.alias}.${where.column} = '${where.value}'`);
-    } else if (where.operator === 'NEQ') {
-      qb[call](`${qb.alias}.${where.column} != '${where.value}'`);
+    switch (where.operator) {
+      case 'FTS':
+        qb[call](`${qb.alias}.${where.column} LIKE '%${where.value}%'`);
+        break;
+      case 'EQ':
+        qb[call](`${qb.alias}.${where.column} = '${where.value}'`);
+        break;
+      case 'NEQ':
+        qb[call](`${qb.alias}.${where.column} != '${where.value}'`);
+        break;
     }
   }
+}
+
+async function autoInnerJoinAndSelect<T>(qb: SelectQueryBuilder<T>, metadata: EntityMetadata, alias: string) {
+  metadata.relations.forEach((relation) => {
+    const relationAlias = `${alias}-${relation.propertyName}`;
+    qb.innerJoinAndSelect(`${alias}.${relation.propertyName}`, relationAlias);
+
+    // console.log('relations', relationAlias, `${alias}.${relation.propertyName}`);
+
+    const joinedMetadata = qb.connection.getMetadata(relation.type);
+    autoInnerJoinAndSelect(qb, joinedMetadata, relationAlias);
+  });
 }
 
 export default async function getPaginatorResults<T>(
@@ -39,19 +51,18 @@ export default async function getPaginatorResults<T>(
   orderBy: PaginatorOrderBy,
   entity?: string,
 ) {
-  const query = repository.createQueryBuilder('product').leftJoinAndSelect('product.user', 'user');
-  console.log('query', query.getQuery());
+  const metadata = repository.metadata;
+  const query = repository.createQueryBuilder(entity);
 
-  if (where) buildCondition(where, query, 'product', 'orWhere');
-  if (orderBy) query.orderBy(`product.${orderBy.column}`, orderBy.order);
+  await autoInnerJoinAndSelect(query, metadata, entity);
+
+  if (where) buildCondition(where, query, entity, 'orWhere');
+  if (orderBy) query.orderBy(`favorite.${orderBy.column}`, orderBy.order);
 
   const [entities, totalElements] = await query
     .take(perPage)
     .skip((page - 1) * perPage)
-
     .getManyAndCount();
-
-  console.log('results', entities);
 
   const totalPages = Math.ceil(totalElements / perPage);
 

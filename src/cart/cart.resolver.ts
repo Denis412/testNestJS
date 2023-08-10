@@ -33,7 +33,7 @@ export class CartResolver {
     return this.cartService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorCart, { name: 'paginateCarts' })
+  @Query(() => PaginatorCart, { name: 'paginateCart' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -53,17 +53,12 @@ export class CartResolver {
   }
 
   @Mutation(() => Cart)
-  updateCart(
-    @Args('input') input: UpdateCartInput,
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  updateCart(@Args('input') input: UpdateCartInput, @Args('id', { type: () => Int }) id: number) {
     return this.cartService.update(id, input);
   }
 
   @Mutation(() => Cart)
-  async deleteCart(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<{ id: number }> {
+  async deleteCart(@Args('id', { type: () => Int }) id: number): Promise<{ id: number }> {
     await this.cartService.remove(id);
 
     return {

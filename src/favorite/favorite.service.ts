@@ -19,12 +19,7 @@ export class FavoriteService {
     return this.repository.save(input);
   }
 
-  findAll(
-    page?: number,
-    perPage?: number,
-    where?: PaginatorWhere,
-    orderBy?: PaginatorOrderBy,
-  ) {
+  findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
     const input = { where: null, order: null };
 
     if (where)
@@ -39,20 +34,9 @@ export class FavoriteService {
     return this.repository.find(input);
   }
 
-  async getAllWithPaginate(
-    page: number,
-    perPage: number,
-    where: PaginatorWhere,
-    orderBy: PaginatorOrderBy,
-  ) {
+  async getAllWithPaginate(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
     try {
-      return await getPaginatorResults<Favorite>(
-        this.repository,
-        page,
-        perPage,
-        where,
-        orderBy,
-      );
+      return await getPaginatorResults<Favorite>(this.repository, page, perPage, where, orderBy, 'favorite');
     } catch (e) {
       throw new Error('Invalid data');
     }

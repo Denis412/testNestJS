@@ -33,7 +33,7 @@ export class FavoriteResolver {
     return this.favoriteService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorFavorite, { name: 'paginateFavorites' })
+  @Query(() => PaginatorFavorite, { name: 'paginateFavorite' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -44,12 +44,7 @@ export class FavoriteResolver {
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
     orderBy: PaginatorOrderBy,
   ) {
-    return this.favoriteService.getAllWithPaginate(
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+    return this.favoriteService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => Favorite, { name: 'favorite' })
@@ -58,17 +53,12 @@ export class FavoriteResolver {
   }
 
   @Mutation(() => Favorite)
-  updateFavorite(
-    @Args('input') updateFavoriteInput: UpdateFavoriteInput,
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  updateFavorite(@Args('input') updateFavoriteInput: UpdateFavoriteInput, @Args('id', { type: () => Int }) id: number) {
     return this.favoriteService.update(id, updateFavoriteInput);
   }
 
   @Mutation(() => Favorite)
-  async deleteFavorite(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<{ id: number }> {
+  async deleteFavorite(@Args('id', { type: () => Int }) id: number): Promise<{ id: number }> {
     await this.favoriteService.remove(id);
 
     return {

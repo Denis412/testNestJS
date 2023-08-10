@@ -33,7 +33,7 @@ export class CategoryResolver {
     return this.categoryService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorCategory, { name: 'paginateCategories' })
+  @Query(() => PaginatorCategory, { name: 'paginateCategory' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -44,12 +44,7 @@ export class CategoryResolver {
     @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
     orderBy: PaginatorOrderBy,
   ) {
-    return this.categoryService.getAllWithPaginate(
-      page,
-      perPage,
-      where,
-      orderBy,
-    );
+    return this.categoryService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
   @Query(() => Category, { name: 'category' })
@@ -60,10 +55,7 @@ export class CategoryResolver {
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
-  updateCategory(
-    @Args('input') input: UpdateCategoryInput,
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  updateCategory(@Args('input') input: UpdateCategoryInput, @Args('id', { type: () => Int }) id: number) {
     return this.categoryService.update(id, input);
   }
 

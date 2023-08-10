@@ -1,12 +1,4 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  Parent,
-  ResolveField,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Parent, ResolveField } from '@nestjs/graphql';
 import { ChatService } from './chat.service';
 import { Chat } from './entities/chat.entity';
 import { CreateChatInput } from './dto/create-chat.input';
@@ -23,10 +15,7 @@ import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.i
 @UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Chat)
 export class ChatResolver {
-  constructor(
-    private readonly chatService: ChatService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
 
   @Mutation(() => Chat)
   createChat(@Args('input') createChatInput: CreateChatInput) {
@@ -47,7 +36,7 @@ export class ChatResolver {
     return this.chatService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorChat, { name: 'paginateChats' })
+  @Query(() => PaginatorChat, { name: 'paginateChat' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page?: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
@@ -65,10 +54,7 @@ export class ChatResolver {
   }
 
   @Mutation(() => Chat)
-  updateChat(
-    @Args('input') updateChatInput: UpdateChatInput,
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  updateChat(@Args('input') updateChatInput: UpdateChatInput, @Args('id', { type: () => Int }) id: number) {
     return this.chatService.update(id, updateChatInput);
   }
 
