@@ -1,10 +1,5 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
+import { OnModuleInit } from '@nestjs/common';
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { CreateMessageInput } from 'src/message/dto/create-message.input';
 import { MessageService } from 'src/message/message.service';
@@ -21,7 +16,7 @@ export class myGateway implements OnModuleInit {
   constructor(private readonly messageService: MessageService) {}
 
   onModuleInit() {
-    this.server.on('connection', (socket) => {
+    this.server.on('connection', () => {
       console.log('socket connect');
     });
   }
@@ -31,13 +26,13 @@ export class myGateway implements OnModuleInit {
     const input: CreateMessageInput = {
       text: body.text,
       sender: {
-        id: parseInt(body.sender.id),
+        id: body.sender.id,
       },
       recipient: {
-        id: parseInt(body.recipient.id),
+        id: body.recipient.id,
       },
       chat: {
-        id: parseInt(body.chat.id),
+        id: body.chat.id,
       },
     };
 

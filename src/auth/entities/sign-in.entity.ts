@@ -1,10 +1,9 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { AccessToken } from './access-token.entity';
+import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
 export class SingIn {
-  @Field(() => Int, { nullable: true })
-  user_id: number;
+  @Field()
+  user_id: string;
 
   @Field({ nullable: false })
   token_type: string;

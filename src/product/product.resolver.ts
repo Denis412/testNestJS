@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { ProductService } from './product.service';
 import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
@@ -9,7 +9,6 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { PaginatorProduct } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
-import { User } from 'src/user/entities/user.entity';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -49,7 +48,7 @@ export class ProductResolver {
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: number): Promise<Product> | Promise<null> {
+  findOne(@Args('id') id: string): Promise<Product> | Promise<null> {
     return this.productService.findOne(id);
   }
 
@@ -59,7 +58,7 @@ export class ProductResolver {
   updateProduct(
     @Args('input', { type: () => UpdateProductInput })
     updateProductInput: UpdateProductInput,
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id') id: string,
   ) {
     return this.productService.update(id, updateProductInput);
   }
@@ -67,7 +66,7 @@ export class ProductResolver {
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Product)
-  async deleteProduct(@Args('id', { type: () => Int }) id: number) {
+  async deleteProduct(@Args('id') id: string) {
     await this.productService.remove(id);
 
     return {

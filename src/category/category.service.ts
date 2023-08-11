@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class CategoryService {
@@ -15,11 +16,19 @@ export class CategoryService {
     private readonly repository: Repository<Category>,
   ) {}
 
-  create(createCategoryInput: CreateCategoryInput) {
-    return this.repository.save(createCategoryInput);
+  create(input: CreateCategoryInput) {
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
+    const f = {
+      page,
+      perPage,
+      where,
+      orderBy,
+    };
+    console.log(f);
+
     return this.repository.find();
   }
 
@@ -31,15 +40,15 @@ export class CategoryService {
     }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateCategoryInput: UpdateCategoryInput) {
+  update(id: string, updateCategoryInput: UpdateCategoryInput) {
     return this.repository.save({ ...updateCategoryInput, id });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.repository.delete(id);
   }
 }

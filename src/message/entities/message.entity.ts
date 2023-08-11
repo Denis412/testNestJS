@@ -1,22 +1,14 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Chat } from 'src/chat/entities/chat.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class Message {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int)
-  id: number;
+  @Field()
+  @PrimaryColumn()
+  id: string;
 
   @Column({ type: 'varchar', length: 500 })
   @Field({ nullable: false })

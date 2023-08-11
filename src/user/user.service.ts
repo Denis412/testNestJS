@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class UserService {
@@ -17,10 +18,12 @@ export class UserService {
     const saltOrRounds = 10;
     input.password = await bcrypt.hash(input.password, saltOrRounds);
 
-    return this.repository.save(input);
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
+    console.log(where, orderBy);
+
     return this.repository.find();
   }
 
@@ -28,7 +31,7 @@ export class UserService {
     return await getPaginatorResults<User>(this.repository, page, perPage, where, orderBy, 'user');
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
@@ -36,11 +39,11 @@ export class UserService {
     return this.repository.findOneBy({ email });
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
+  update(id: string, updateUserInput: UpdateUserInput) {
     return this.repository.save({ ...updateUserInput, id });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.repository.delete(id);
   }
 }

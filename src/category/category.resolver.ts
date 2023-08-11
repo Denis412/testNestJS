@@ -48,21 +48,21 @@ export class CategoryResolver {
   }
 
   @Query(() => Category, { name: 'category' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.categoryService.findOne(id);
   }
 
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
-  updateCategory(@Args('input') input: UpdateCategoryInput, @Args('id', { type: () => Int }) id: number) {
+  updateCategory(@Args('input') input: UpdateCategoryInput, @Args('id') id: string) {
     return this.categoryService.update(id, input);
   }
 
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
-  async deleteCategory(@Args('id', { type: () => Int }) id: number) {
+  async deleteCategory(@Args('id') id: string) {
     await this.categoryService.remove(id);
     return {
       id,

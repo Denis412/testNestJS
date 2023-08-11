@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MessageService } from './message.service';
 import { Message } from './entities/message.entity';
 import { CreateMessageInput } from './dto/create-message.input';
@@ -48,17 +48,17 @@ export class MessageResolver {
   }
 
   @Query(() => Message, { name: 'message' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.messageService.findOne(id);
   }
 
   @Mutation(() => Message)
-  updateMessage(@Args('input') updateMessageInput: UpdateMessageInput, @Args('id', { type: () => Int }) id: number) {
+  updateMessage(@Args('input') updateMessageInput: UpdateMessageInput, @Args('id') id: string) {
     return this.messageService.update(id, updateMessageInput);
   }
 
   @Mutation(() => Message)
-  async deleteMessage(@Args('id', { type: () => Int }) id: number) {
+  async deleteMessage(@Args('id') id: string) {
     await this.messageService.remove(id);
     return {
       id,

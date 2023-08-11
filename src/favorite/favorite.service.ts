@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class FavoriteService {
@@ -16,7 +17,12 @@ export class FavoriteService {
   ) {}
 
   create(input: CreateFavoriteInput) {
-    return this.repository.save(input);
+    // const entity = this.repository.create({
+    //   ...input,
+    //   id: generateEntityId(),
+    // });
+
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
@@ -42,15 +48,15 @@ export class FavoriteService {
     }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateFavoriteInput: UpdateFavoriteInput) {
+  update(id: string, updateFavoriteInput: UpdateFavoriteInput) {
     return this.repository.save({ ...updateFavoriteInput, id });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.repository.delete(id);
   }
 }

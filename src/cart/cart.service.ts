@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCartInput } from './dto/create-cart.input';
-import { UpdateCartInput } from './dto/update-cart.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class CartService {
   constructor(@InjectRepository(Cart) private readonly repository: Repository<Cart>) {}
 
-  create(createCartInput: CreateCartInput) {
-    return this.repository.save(createCartInput);
+  create(input: CreateCartInput) {
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
@@ -47,15 +47,15 @@ export class CartService {
     }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
-  update(id: number, updateCartInput: UpdateCartInput) {
-    return this.repository.save({ ...updateCartInput, id });
-  }
+  // update(id: string, updateCartInput: UpdateCartInput) {
+  //   return this.repository.save({ ...updateCartInput, id });
+  // }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.repository.delete(id);
   }
 }

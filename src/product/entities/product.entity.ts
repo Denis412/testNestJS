@@ -1,24 +1,14 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 import { Category } from 'src/category/entities/category.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class Product {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int)
-  id: number;
-
-  static __typename: 'Product';
+  @Field()
+  @PrimaryColumn()
+  id: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false })

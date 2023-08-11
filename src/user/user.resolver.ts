@@ -42,7 +42,7 @@ export class UserResolver {
   }
 
   @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.userService.findOne(id);
   }
 
@@ -50,7 +50,7 @@ export class UserResolver {
   updateUser(
     @Args('input', { type: () => UpdateUserInput })
     updateUserInput: UpdateUserInput,
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id') id: string,
   ) {
     return this.userService.update(id, updateUserInput);
   }

@@ -3,14 +3,13 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository, ILike, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
-import { paginate } from 'nestjs-typeorm-paginate';
-import { PaginationInfo } from 'src/pagination/dto/paginator-info.dto';
 import getPaginatorResults from 'src/pagination/paginator-results';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class ProductService {
@@ -19,8 +18,8 @@ export class ProductService {
     private readonly userService: UserService,
   ) {}
 
-  create(createProductInput: CreateProductInput) {
-    return this.repository.save(createProductInput);
+  create(input: CreateProductInput) {
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(where?: PaginatorWhere | null, orderBy?: PaginatorOrderBy | null) {
@@ -50,16 +49,16 @@ export class ProductService {
     return await getPaginatorResults<Product>(this.repository, page, perPage, where, orderBy, 'product');
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
-  async update(id: number, updateProductInput: UpdateProductInput): Promise<Product> {
+  async update(id: string, updateProductInput: UpdateProductInput): Promise<Product> {
     const product = await this.repository.save({ ...updateProductInput, id });
     return this.repository.findOneBy({ id: product.id });
   }
 
-  async getUserForProduct(productId: number): Promise<User> {
+  async getUserForProduct(productId: string): Promise<User> {
     const product = await this.findOne(productId);
 
     if (!product) {
@@ -69,7 +68,7 @@ export class ProductService {
     return this.userService.findOne(product.user.id);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repository.delete(id);
   }
 }

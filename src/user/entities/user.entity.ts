@@ -1,20 +1,12 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-
-import { Exclude } from 'class-transformer';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @ObjectType()
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int, { description: 'Идентификатор пользователя' })
-  id: number;
+  @Field()
+  @PrimaryColumn()
+  id: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false, description: 'Имя пользователя' })

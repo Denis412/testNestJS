@@ -7,13 +7,14 @@ import { Repository } from 'typeorm';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import getPaginatorResults from 'src/pagination/paginator-results';
+import generateEntityId from 'src/helpers/generateEntityId';
 
 @Injectable()
 export class MessageService {
   constructor(@InjectRepository(Message) private readonly repository: Repository<Message>) {}
 
-  create(createMessageInput: CreateMessageInput) {
-    return this.repository.save(createMessageInput);
+  create(input: CreateMessageInput) {
+    return this.repository.save({ ...input, id: generateEntityId() });
   }
 
   findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {
@@ -47,16 +48,16 @@ export class MessageService {
     }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repository.findOneBy({ id });
   }
 
-  async update(id: number, updateMessageInput: UpdateMessageInput) {
+  async update(id: string, updateMessageInput: UpdateMessageInput) {
     const message = await this.repository.save({ ...updateMessageInput, id });
     return this.repository.findOneBy({ id: message.id });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.repository.delete(id);
   }
 }

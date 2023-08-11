@@ -36,8 +36,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
 
-    if (user && (await bcrypt.compare(password, user.password)))
-      return await this.login(user);
+    if (user && (await bcrypt.compare(password, user.password))) return await this.login(user);
 
     return null;
   }
@@ -61,10 +60,7 @@ export class AuthService {
       token_type: 'Bearer',
       access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
       expires_in: 3600,
-      refresh_token: this.jwtService.sign(
-        { ...payload, refresh: true },
-        { expiresIn: '7d' },
-      ),
+      refresh_token: this.jwtService.sign({ ...payload, refresh: true }, { expiresIn: '7d' }),
     };
   }
 
@@ -75,10 +71,7 @@ export class AuthService {
       token_type: 'Bearer',
       access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
       expires_in: 3600,
-      refresh_token: this.jwtService.sign(
-        { ...payload, refresh: true },
-        { expiresIn: '7d' },
-      ),
+      refresh_token: this.jwtService.sign({ ...payload, refresh: true }, { expiresIn: '7d' }),
     };
   }
 }
