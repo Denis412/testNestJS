@@ -23,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
+import { PermissionRuleModule } from './permission-rule/permission-rule.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
     AuthModule,
     GatewayModule,
     WebsocketsModule,
+    PermissionRuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
