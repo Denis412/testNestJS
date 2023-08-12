@@ -18,7 +18,7 @@ export class JWTGuard extends AuthGuard('jwt') {
 
     const jwtData = <jwt.JwtPayload>jwt.verify(token, jwtConstants.secret);
 
-    console.log('data', jwtData);
+    // console.log('data', jwtData);
 
     req.userId = jwtData.id;
 

@@ -23,6 +23,10 @@ import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
+import { TypeModule } from './type/type.module';
+import { PropertyModule } from './property/property.module';
+import { Property } from './property/entities/property.entity';
+import { Type } from './type/entities/type.entity';
 
 @Module({
   imports: [
@@ -39,7 +43,7 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, Property, Type],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -53,6 +57,8 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
     AuthModule,
     GatewayModule,
     WebsocketsModule,
+    TypeModule,
+    PropertyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
