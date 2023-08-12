@@ -27,6 +27,10 @@ export class Chat {
   saller: User;
 
   @Field()
+  @Column()
+  author_id: string;
+
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 

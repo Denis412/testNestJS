@@ -45,6 +45,10 @@ export class Product {
   image: string;
 
   @Field()
+  @Column()
+  author_id: string;
+
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 

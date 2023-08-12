@@ -9,6 +9,7 @@ import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorCategory } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -17,8 +18,8 @@ export class CategoryResolver {
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Category)
-  createCategory(@Args('input') input: CreateCategoryInput) {
-    return this.categoryService.create(input);
+  createCategory(@Args('input') input: CreateCategoryInput, @CurrentUser() userId: string) {
+    return this.categoryService.create(input, userId);
   }
 
   @Query(() => [Category], { name: 'categories' })

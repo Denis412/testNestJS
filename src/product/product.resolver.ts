@@ -9,6 +9,7 @@ import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 import { PaginatorProduct } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -17,8 +18,8 @@ export class ProductResolver {
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
   @Mutation(() => Product)
-  createProduct(@Args('input') createProductInput: CreateProductInput) {
-    return this.productService.create(createProductInput);
+  createProduct(@Args('input') createProductInput: CreateProductInput, @CurrentUser() userId: string) {
+    return this.productService.create(createProductInput, userId);
   }
 
   @Query(() => [Product], { name: 'products' })

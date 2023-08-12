@@ -8,6 +8,7 @@ import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorCart } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @UseGuards(JWTGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
@@ -16,8 +17,8 @@ export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
   @Mutation(() => Cart)
-  createCart(@Args('input') input: CreateCartInput) {
-    return this.cartService.create(input);
+  createCart(@Args('input') input: CreateCartInput, @CurrentUser() userId: string) {
+    return this.cartService.create(input, userId);
   }
 
   @Query(() => [Cart], { name: 'carts' })
