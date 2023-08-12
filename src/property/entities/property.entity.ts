@@ -43,6 +43,10 @@ export class Property {
   type: Type;
 
   @Field()
+  @Column()
+  author_id: string;
+
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 

@@ -7,7 +7,12 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { PaginatorProperty } from './entities/paginator.entity';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
+import { JWTGuard } from 'src/auth/guards/JWTGuard';
+import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 
+@UseGuards(JWTGuard)
+@UseInterceptors(CheckValidTokenInterceptor)
 @Resolver(() => Property)
 export class PropertyResolver {
   constructor(private readonly propertyService: PropertyService) {}

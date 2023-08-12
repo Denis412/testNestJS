@@ -20,11 +20,17 @@ export class TypeService {
   async create(input: CreateTypeInput, authorId: string) {
     console.log('author', authorId);
 
-    const newType = await this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
+    const newType = this.repository.create({ ...input, author_id: authorId, id: generateEntityId() });
 
-    // this.connection.query(`CREATE TABLE IF NOT EXISTS ${newType.name} ( id TEXT NOT NULL PRIMARY KEY )`);
+    this.connection.query(`CREATE TABLE IF NOT EXISTS ${newType.name} ( 
+      id VARCHAR(255) NOT NULL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      author_id VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )`);
 
-    return newType;
+    return this.repository.save(newType);
   }
 
   findAll() {
@@ -36,7 +42,7 @@ export class TypeService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} type`;
+    return this.repository.findOneBy({ id });
   }
 
   update(id: string, input: UpdateTypeInput) {

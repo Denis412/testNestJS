@@ -8,5 +8,6 @@ import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Type, UsedRefresh])],
   providers: [TypeResolver, TypeService],
+  exports: [TypeService],
 })
 export class TypeModule {}

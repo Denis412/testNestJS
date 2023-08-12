@@ -30,7 +30,7 @@ import { Type } from './type/entities/type.entity';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot({
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: true,
@@ -46,6 +46,7 @@ import { Type } from './type/entities/type.entity';
       synchronize: true,
       autoLoadEntities: true,
     }),
+
     CategoryModule,
     MessageModule,
     UserModule,

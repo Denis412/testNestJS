@@ -37,6 +37,7 @@
     "@supabase/supabase-js": "^2.31.0",
     "bcrypt": "^5.1.0",
     "graphql": "^16.7.1",
+    "graphql-scalars": "^1.22.2",
     "graphql-upload": "^14.0.0",
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.5.2",
