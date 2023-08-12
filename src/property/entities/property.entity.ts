@@ -38,6 +38,7 @@ export class Property {
   @Column({ type: 'int' })
   order: number;
 
+  @Field(() => Type)
   @ManyToOne(() => Type, (type) => type.properties)
   type: Type;
 

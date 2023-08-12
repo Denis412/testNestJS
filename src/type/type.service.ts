@@ -6,6 +6,9 @@ import { Type } from './entities/type.entity';
 import { Repository } from 'typeorm';
 import generateEntityId from 'src/helpers/generateEntityId';
 import { Connection } from 'typeorm';
+import getPaginatorResults from 'src/pagination/paginator-results';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @Injectable()
 export class TypeService {
@@ -26,6 +29,10 @@ export class TypeService {
 
   findAll() {
     return this.repository.find();
+  }
+
+  async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
+    return await getPaginatorResults<Type>(this.repository, page, perPage, where, orderBy, 'type');
   }
 
   findOne(id: string) {

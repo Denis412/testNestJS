@@ -31,7 +31,14 @@ function buildCondition(where: PaginatorWhere, qb, entity: string, call?: string
   }
 }
 
-async function autoInnerJoinAndSelect<T>(qb: SelectQueryBuilder<T>, metadata: EntityMetadata, alias: string) {
+async function autoInnerJoinAndSelect<T>(
+  qb: SelectQueryBuilder<T>,
+  metadata: EntityMetadata,
+  alias: string,
+  level = 0,
+) {
+  if (level >= 4) return;
+
   metadata.relations.forEach((relation) => {
     const relationAlias = `${alias}-${relation.propertyName}`;
     qb.innerJoinAndSelect(`${alias}.${relation.propertyName}`, relationAlias);
@@ -39,7 +46,7 @@ async function autoInnerJoinAndSelect<T>(qb: SelectQueryBuilder<T>, metadata: En
     // console.log('relations', relationAlias, `${alias}.${relation.propertyName}`);
 
     const joinedMetadata = qb.connection.getMetadata(relation.type);
-    autoInnerJoinAndSelect(qb, joinedMetadata, relationAlias);
+    autoInnerJoinAndSelect(qb, joinedMetadata, relationAlias, level + 1);
   });
 }
 
@@ -52,12 +59,13 @@ export default async function getPaginatorResults<T>(
   entity?: string,
 ) {
   const metadata = repository.metadata;
+
   const query = repository.createQueryBuilder(entity);
 
   await autoInnerJoinAndSelect(query, metadata, entity);
 
   if (where) buildCondition(where, query, entity, 'orWhere');
-  if (orderBy) query.orderBy(`favorite.${orderBy.column}`, orderBy.order);
+  if (orderBy) query.orderBy(`${entity}.${orderBy.column}`, orderBy.order);
 
   const [entities, totalElements] = await query
     .take(perPage)

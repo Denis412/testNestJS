@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Property } from './entities/property.entity';
 import { Repository } from 'typeorm';
 import generateEntityId from 'src/helpers/generateEntityId';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
+import getPaginatorResults from 'src/pagination/paginator-results';
 
 @Injectable()
 export class PropertyService {
@@ -16,6 +19,10 @@ export class PropertyService {
 
   findAll() {
     return `This action returns all property`;
+  }
+
+  async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {
+    return await getPaginatorResults<Property>(this.repository, page, perPage, where, orderBy, 'property');
   }
 
   findOne(id: string) {

@@ -7,6 +7,9 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { PaginatorType } from './entities/paginator.entityu';
+import PaginatorWhere from 'src/types/where';
+import PaginatorOrderBy from 'src/types/orderBy';
 
 @UseGuards(JWTGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
@@ -22,6 +25,18 @@ export class TypeResolver {
   @Query(() => [Type], { name: 'types' })
   findAll() {
     return this.typeService.findAll();
+  }
+
+  @Query(() => PaginatorType, { name: 'paginateType' })
+  async getAllWithPaginate(
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
+    @Args('where', { type: () => PaginatorWhere, nullable: true })
+    where?: PaginatorWhere,
+    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
+    orderBy?: PaginatorOrderBy,
+  ) {
+    return this.typeService.getAllWithPagination(page, perPage, where, orderBy);
   }
 
   @Query(() => Type, { name: 'type' })
