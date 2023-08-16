@@ -20,7 +20,6 @@ import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
 import { AuthModule } from './auth/auth.module';
-import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
 
@@ -52,7 +51,6 @@ import { UsedRefresh } from './auth/entities/used-refresh.entity';
     FavoriteModule,
     AuthModule,
     GatewayModule,
-    WebsocketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
