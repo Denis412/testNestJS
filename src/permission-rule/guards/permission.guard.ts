@@ -40,7 +40,7 @@ export class PermissionGuard implements CanActivate {
         (permission) => permission.model_type === 'type' && permission.level === 7,
       );
 
-      if (!permission) throw new UnauthorizedException('dont have permissions');
+      if (!permission) throw new UnauthorizedException('this user does not have access to the action');
     } else if (action === 'update') {
       const permission = permissions.data.find((permission) => {
         return (
@@ -49,7 +49,7 @@ export class PermissionGuard implements CanActivate {
         );
       });
 
-      if (!permission) throw new UnauthorizedException('dont have permissions');
+      if (!permission) throw new UnauthorizedException('this user does not have access to the action');
     } else if (action === 'delete') {
       const permission = permissions.data.find((permission) => {
         return (
@@ -58,7 +58,7 @@ export class PermissionGuard implements CanActivate {
         );
       });
 
-      if (!permission) throw new UnauthorizedException('dont have permissions');
+      if (!permission) throw new UnauthorizedException('this user does not have access to the action');
     } else {
       const permission = permissions.data.find((permission) => {
         return (
@@ -67,10 +67,8 @@ export class PermissionGuard implements CanActivate {
         );
       });
 
-      if (!permission) throw new UnauthorizedException('dont have permissions');
+      if (!permission) throw new UnauthorizedException('this user does not have access to the action');
     }
-
-    console.log('context', permissions);
 
     return true;
   }

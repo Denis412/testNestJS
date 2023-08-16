@@ -22,8 +22,7 @@ export class PermissionRuleResolver {
     return this.permissionRuleService.create(input, userId);
   }
 
-  @Query(() => [PermissionRule], { name: 'paginate_permissionRule' })
-  @Query(() => PaginatorPermissionRule, { name: 'paginate_property' })
+  @Query(() => PaginatorPermissionRule, { name: 'paginate_permissionRule' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
@@ -34,6 +33,7 @@ export class PermissionRuleResolver {
   ) {
     return this.permissionRuleService.getAllWithPagination(page, perPage, where, orderBy);
   }
+
   @Query(() => PermissionRule, { name: 'get_permissionRule' })
   findOne(@Args('id') id: string) {
     return this.permissionRuleService.findOne(id);

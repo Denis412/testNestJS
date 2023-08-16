@@ -1,5 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Group } from 'src/group/entities/group.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -23,6 +24,10 @@ export class User {
   @Column({ unique: true, nullable: false })
   @Field({ nullable: false, description: 'Адрес электронной почты' })
   email: string;
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.subjects, { eager: true })
+  groups: Group[];
 
   @Column({ nullable: false })
   password: string;

@@ -28,6 +28,8 @@ import { Property } from './property/entities/property.entity';
 import { Type } from './type/entities/type.entity';
 import { PermissionRuleModule } from './permission-rule/permission-rule.module';
 import { PermissionRule } from './permission-rule/entities/permission-rule.entity';
+import { GroupModule } from './group/group.module';
+import { Group } from './group/entities/group.entity';
 
 @Module({
   imports: [
@@ -44,7 +46,20 @@ import { PermissionRule } from './permission-rule/entities/permission-rule.entit
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, Property, Type, PermissionRule],
+      entities: [
+        Category,
+        User,
+        Product,
+        Cart,
+        Favorite,
+        Message,
+        Chat,
+        UsedRefresh,
+        Property,
+        Type,
+        PermissionRule,
+        Group,
+      ],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -61,6 +76,7 @@ import { PermissionRule } from './permission-rule/entities/permission-rule.entit
     TypeModule,
     PropertyModule,
     PermissionRuleModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
