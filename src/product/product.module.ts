@@ -8,9 +8,10 @@ import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.i
 import { AuthModule } from 'src/auth/auth.module';
 import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
 import { UserModule } from 'src/user/user.module';
+import { PermissionRuleModule } from 'src/permission-rule/permission-rule.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, UsedRefresh]), UserModule],
+  imports: [TypeOrmModule.forFeature([Product, UsedRefresh]), UserModule, PermissionRuleModule],
   providers: [ProductResolver, ProductService],
 })
 export class ProductModule {}

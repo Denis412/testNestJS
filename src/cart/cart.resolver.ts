@@ -16,24 +16,12 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
-  @Mutation(() => Cart)
+  @Mutation(() => Cart, { name: 'create_cart' })
   createCart(@Args('input') input: CreateCartInput, @CurrentUser() userId: string) {
     return this.cartService.create(input, userId);
   }
 
-  @Query(() => [Cart], { name: 'carts' })
-  findAll(
-    @Args('page', { type: () => Int, nullable: true }) page: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
-    @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where: PaginatorWhere,
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy: PaginatorOrderBy,
-  ) {
-    return this.cartService.findAll(page, perPage, where, orderBy);
-  }
-
-  @Query(() => PaginatorCart, { name: 'paginateCart' })
+  @Query(() => PaginatorCart, { name: 'paginate_cart' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -47,7 +35,7 @@ export class CartResolver {
     return this.cartService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
-  @Query(() => Cart, { name: 'cart' })
+  @Query(() => Cart, { name: 'get_cart' })
   findOne(@Args('id') id: string) {
     return this.cartService.findOne(id);
   }
@@ -57,7 +45,7 @@ export class CartResolver {
   //   return this.cartService.update(id, input);
   // }
 
-  @Mutation(() => Cart)
+  @Mutation(() => Cart, { name: 'delete_cart' })
   async deleteCart(@Args('id') id: string): Promise<{ id: string }> {
     await this.cartService.remove(id);
 

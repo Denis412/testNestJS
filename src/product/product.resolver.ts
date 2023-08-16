@@ -10,33 +10,21 @@ import PaginatorOrderBy from 'src/types/orderBy';
 import { PaginatorProduct } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { PermissionGuard } from 'src/permission-rule/guards/permission.guard';
 
+@UseGuards(PermissionGuard)
 @Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
-  @Mutation(() => Product)
+  @Mutation(() => Product, { name: 'create_product' })
   createProduct(@Args('input') createProductInput: CreateProductInput, @CurrentUser() userId: string) {
     return this.productService.create(createProductInput, userId);
   }
 
-  @Query(() => [Product], { name: 'products' })
-  findAll(
-    @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
-    page: number,
-    @Args('perPage', { type: () => Int, nullable: true, defaultValue: 50 })
-    perPage: number,
-    @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where: PaginatorWhere,
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy: PaginatorOrderBy,
-  ) {
-    return this.productService.findAll(where, orderBy);
-  }
-
-  @Query(() => PaginatorProduct, { name: 'paginateProduct' })
+  @Query(() => PaginatorProduct, { name: 'paginate_product' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
@@ -48,14 +36,14 @@ export class ProductResolver {
     return this.productService.getAllWithPagination(page, perPage, where, orderBy);
   }
 
-  @Query(() => Product, { name: 'product' })
+  @Query(() => Product, { name: 'get_product' })
   findOne(@Args('id') id: string): Promise<Product> | Promise<null> {
     return this.productService.findOne(id);
   }
 
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
-  @Mutation(() => Product)
+  @Mutation(() => Product, { name: 'update_product' })
   updateProduct(
     @Args('input', { type: () => UpdateProductInput })
     updateProductInput: UpdateProductInput,
@@ -66,7 +54,7 @@ export class ProductResolver {
 
   @UseGuards(JWTGuard)
   @UseInterceptors(CheckValidTokenInterceptor)
-  @Mutation(() => Product)
+  @Mutation(() => Product, { name: 'delete_product' })
   async deleteProduct(@Args('id') id: string) {
     await this.productService.remove(id);
 

@@ -18,7 +18,7 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 export class ChatResolver {
   constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
 
-  @Mutation(() => Chat)
+  @Mutation(() => Chat, { name: 'create_chat' })
   createChat(@Args('input') createChatInput: CreateChatInput, @CurrentUser() userId: string) {
     return this.chatService.create(createChatInput, userId);
   }
@@ -37,7 +37,7 @@ export class ChatResolver {
     return this.chatService.findAll(page, perPage, where, orderBy);
   }
 
-  @Query(() => PaginatorChat, { name: 'paginateChat' })
+  @Query(() => PaginatorChat, { name: 'paginate_chat' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page?: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
@@ -49,17 +49,17 @@ export class ChatResolver {
     return this.chatService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
-  @Query(() => Chat, { name: 'chat' })
+  @Query(() => Chat, { name: 'get_chat' })
   findOne(@Args('id') id: string) {
     return this.chatService.findOne(id);
   }
 
-  @Mutation(() => Chat)
+  @Mutation(() => Chat, { name: 'update_chat' })
   updateChat(@Args('input') updateChatInput: UpdateChatInput, @Args('id') id: string) {
     return this.chatService.update(id, updateChatInput);
   }
 
-  @Mutation(() => Chat)
+  @Mutation(() => Chat, { name: 'delete_chat' })
   async deleteChat(@Args('id') id: string) {
     await this.chatService.remove(id);
 

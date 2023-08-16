@@ -16,24 +16,12 @@ import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.i
 export class FavoriteResolver {
   constructor(private readonly favoriteService: FavoriteService) {}
 
-  @Mutation(() => Favorite)
+  @Mutation(() => Favorite, { name: 'create_favorite' })
   createFavorite(@Args('input') input: CreateFavoriteInput) {
     return this.favoriteService.create(input);
   }
 
-  @Query(() => [Favorite], { name: 'favorites' })
-  findAll(
-    @Args('page', { type: () => Int, nullable: true }) page?: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
-    @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere,
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy,
-  ) {
-    return this.favoriteService.findAll(page, perPage, where, orderBy);
-  }
-
-  @Query(() => PaginatorFavorite, { name: 'paginateFavorite' })
+  @Query(() => PaginatorFavorite, { name: 'paginate_favorite' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -47,17 +35,17 @@ export class FavoriteResolver {
     return this.favoriteService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
-  @Query(() => Favorite, { name: 'favorite' })
+  @Query(() => Favorite, { name: 'get_favorite' })
   findOne(@Args('id') id: string) {
     return this.favoriteService.findOne(id);
   }
 
-  @Mutation(() => Favorite)
+  @Mutation(() => Favorite, { name: 'update_favorite' })
   updateFavorite(@Args('input') updateFavoriteInput: UpdateFavoriteInput, @Args('id') id: string) {
     return this.favoriteService.update(id, updateFavoriteInput);
   }
 
-  @Mutation(() => Favorite)
+  @Mutation(() => Favorite, { name: 'delete_favorite' })
   async deleteFavorite(@Args('id') id: string): Promise<{ id: string }> {
     await this.favoriteService.remove(id);
 

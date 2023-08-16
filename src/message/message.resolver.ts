@@ -17,24 +17,12 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 export class MessageResolver {
   constructor(private readonly messageService: MessageService) {}
 
-  @Mutation(() => Message)
+  @Mutation(() => Message, { name: 'create_message' })
   createMessage(@Args('input') createMessageInput: CreateMessageInput, @CurrentUser() userId: string) {
     return this.messageService.create(createMessageInput, userId);
   }
 
-  @Query(() => [Message], { name: 'messages' })
-  findAll(
-    @Args('page', { type: () => Int, nullable: true }) page?: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage?: number,
-    @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere,
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy,
-  ) {
-    return this.messageService.findAll(page, perPage, where, orderBy);
-  }
-
-  @Query(() => PaginatorMessage, { name: 'paginateMessage' })
+  @Query(() => PaginatorMessage, { name: 'paginate_message' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -48,17 +36,17 @@ export class MessageResolver {
     return await this.messageService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
-  @Query(() => Message, { name: 'message' })
+  @Query(() => Message, { name: 'get_message' })
   findOne(@Args('id') id: string) {
     return this.messageService.findOne(id);
   }
 
-  @Mutation(() => Message)
+  @Mutation(() => Message, { name: 'update_message' })
   updateMessage(@Args('input') updateMessageInput: UpdateMessageInput, @Args('id') id: string) {
     return this.messageService.update(id, updateMessageInput);
   }
 
-  @Mutation(() => Message)
+  @Mutation(() => Message, { name: 'delete_message' })
   async deleteMessage(@Args('id') id: string) {
     await this.messageService.remove(id);
     return {

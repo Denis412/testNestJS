@@ -26,6 +26,8 @@ import { TypeModule } from './type/type.module';
 import { PropertyModule } from './property/property.module';
 import { Property } from './property/entities/property.entity';
 import { Type } from './type/entities/type.entity';
+import { PermissionRuleModule } from './permission-rule/permission-rule.module';
+import { PermissionRule } from './permission-rule/entities/permission-rule.entity';
 
 @Module({
   imports: [
@@ -42,7 +44,7 @@ import { Type } from './type/entities/type.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, Property, Type],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, Property, Type, PermissionRule],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -58,6 +60,7 @@ import { Type } from './type/entities/type.entity';
     GatewayModule,
     TypeModule,
     PropertyModule,
+    PermissionRuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

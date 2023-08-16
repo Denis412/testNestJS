@@ -17,17 +17,12 @@ import PaginatorOrderBy from 'src/types/orderBy';
 export class TypeResolver {
   constructor(private readonly typeService: TypeService) {}
 
-  @Mutation(() => Type)
+  @Mutation(() => Type, { name: 'create_type' })
   createType(@Args('input') input: CreateTypeInput, @CurrentUser() userId: string) {
     return this.typeService.create(input, userId);
   }
 
-  @Query(() => [Type], { name: 'types' })
-  findAll() {
-    return this.typeService.findAll();
-  }
-
-  @Query(() => PaginatorType, { name: 'paginateType' })
+  @Query(() => PaginatorType, { name: 'paginate_type' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
@@ -39,17 +34,17 @@ export class TypeResolver {
     return this.typeService.getAllWithPagination(page, perPage, where, orderBy);
   }
 
-  @Query(() => Type, { name: 'type' })
+  @Query(() => Type, { name: 'get_type' })
   findOne(@Args('id') id: string) {
     return this.typeService.findOne(id);
   }
 
-  @Mutation(() => Type)
+  @Mutation(() => Type, { name: 'update_type' })
   updateType(@Args('input') input: UpdateTypeInput, @Args('id') id: string) {
     return this.typeService.update(id, input);
   }
 
-  @Mutation(() => Type)
+  @Mutation(() => Type, { name: 'delete_type' })
   removeType(@Args('id') id: string) {
     return this.typeService.remove(id);
   }

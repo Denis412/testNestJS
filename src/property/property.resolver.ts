@@ -17,17 +17,12 @@ import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.i
 export class PropertyResolver {
   constructor(private readonly propertyService: PropertyService) {}
 
-  @Mutation(() => Property)
+  @Mutation(() => Property, { name: 'create_property' })
   createProperty(@Args('input') input: CreatePropertyInput, @CurrentUser() userId: string) {
     return this.propertyService.create(input, userId);
   }
 
-  @Query(() => [Property], { name: 'property' })
-  findAll() {
-    return this.propertyService.findAll();
-  }
-
-  @Query(() => PaginatorProperty, { name: 'paginateProperty' })
+  @Query(() => PaginatorProperty, { name: 'paginate_property' })
   async getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true }) page: number,
     @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
@@ -39,17 +34,17 @@ export class PropertyResolver {
     return this.propertyService.getAllWithPagination(page, perPage, where, orderBy);
   }
 
-  @Query(() => Property, { name: 'property' })
+  @Query(() => Property, { name: 'get_property' })
   findOne(@Args('id') id: string) {
     return this.propertyService.findOne(id);
   }
 
-  @Mutation(() => Property)
+  @Mutation(() => Property, { name: 'update_property' })
   updateProperty(@Args('input') input: UpdatePropertyInput, @Args('id') id: string) {
     return this.propertyService.update(id, input);
   }
 
-  @Mutation(() => Property)
+  @Mutation(() => Property, { name: 'delete_property' })
   removeProperty(@Args('id') id: string) {
     return this.propertyService.remove(id);
   }
