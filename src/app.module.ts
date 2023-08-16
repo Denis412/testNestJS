@@ -26,7 +26,6 @@ import { TypeModule } from './type/type.module';
 import { PropertyModule } from './property/property.module';
 import { Property } from './property/entities/property.entity';
 import { Type } from './type/entities/type.entity';
-import { DynamicTypeModule } from './dynamic-type/dynamic-type.module';
 
 @Module({
   imports: [
@@ -59,7 +58,6 @@ import { DynamicTypeModule } from './dynamic-type/dynamic-type.module';
     GatewayModule,
     TypeModule,
     PropertyModule,
-    DynamicTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
