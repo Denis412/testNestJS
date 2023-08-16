@@ -9,6 +9,7 @@ import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorMessage } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @UseGuards(JWTGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
@@ -17,8 +18,8 @@ export class MessageResolver {
   constructor(private readonly messageService: MessageService) {}
 
   @Mutation(() => Message)
-  createMessage(@Args('input') createMessageInput: CreateMessageInput) {
-    return this.messageService.create(createMessageInput);
+  createMessage(@Args('input') createMessageInput: CreateMessageInput, @CurrentUser() userId: string) {
+    return this.messageService.create(createMessageInput, userId);
   }
 
   @Query(() => [Message], { name: 'messages' })

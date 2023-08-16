@@ -12,8 +12,8 @@ import generateEntityId from 'src/helpers/generateEntityId';
 export class CartService {
   constructor(@InjectRepository(Cart) private readonly repository: Repository<Cart>) {}
 
-  create(input: CreateCartInput) {
-    return this.repository.save({ ...input, id: generateEntityId() });
+  create(input: CreateCartInput, authorId: string) {
+    return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
   }
 
   findAll(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {

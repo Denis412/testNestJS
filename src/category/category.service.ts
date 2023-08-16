@@ -16,8 +16,8 @@ export class CategoryService {
     private readonly repository: Repository<Category>,
   ) {}
 
-  create(input: CreateCategoryInput) {
-    return this.repository.save({ ...input, id: generateEntityId() });
+  create(input: CreateCategoryInput, authorId: string) {
+    return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
   }
 
   findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {

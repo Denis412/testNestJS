@@ -20,7 +20,6 @@ import { Favorite } from './favorite/entities/favorite.entity';
 import { Message } from './message/entities/message.entity';
 import { Chat } from './chat/entities/chat.entity';
 import { AuthModule } from './auth/auth.module';
-import { WebsocketsModule } from './websockets/websockets.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
 import { PermissionRuleModule } from './permission-rule/permission-rule.module';
@@ -40,16 +39,7 @@ import { PermissionRuleModule } from './permission-rule/permission-rule.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [
-        Category,
-        User,
-        Product,
-        Cart,
-        Favorite,
-        Message,
-        Chat,
-        UsedRefresh,
-      ],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -62,7 +52,6 @@ import { PermissionRuleModule } from './permission-rule/permission-rule.module';
     FavoriteModule,
     AuthModule,
     GatewayModule,
-    WebsocketsModule,
     PermissionRuleModule,
   ],
   controllers: [AppController],

@@ -30,6 +30,10 @@ export class Message {
   chat: Chat;
 
   @Field()
+  @Column()
+  author_id: string;
+
+  @Field()
   @CreateDateColumn()
   created_at: Date;
 

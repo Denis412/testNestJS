@@ -1,12 +1,6 @@
 // auth.interceptor.ts
 
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import * as jwt from 'jsonwebtoken';
@@ -14,6 +8,7 @@ import { jwtConstants } from 'src/auth/constants';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsedRefresh } from 'src/auth/entities/used-refresh.entity';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class CheckValidTokenInterceptor implements NestInterceptor {
@@ -22,24 +17,20 @@ export class CheckValidTokenInterceptor implements NestInterceptor {
     private readonly repository: Repository<UsedRefresh>,
   ) {}
 
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const headers = context.getArgs()[2].req.rawHeaders;
     const auth = headers.indexOf('Authorization');
     const auth1 = headers.indexOf('authorization');
 
-    const token = headers[auth !== -1 ? auth + 1 : auth1 + 1].replace(
-      'Bearer ',
-      '',
-    );
+    const ctx = GqlExecutionContext.create(context);
+    const queryName = ctx.getInfo().path.key;
 
-    const tokenInformation = <jwt.JwtPayload>(
-      jwt.verify(token, jwtConstants.secret)
-    );
+    const token = headers[auth !== -1 ? auth + 1 : auth1 + 1].replace('Bearer ', '');
+    const tokenInformation = <jwt.JwtPayload>jwt.verify(token, jwtConstants.secret);
 
     if (!tokenInformation) throw new Error('Invalid token');
+
+    if (queryName === 'refreshToken' && !tokenInformation.refresh) throw new Error('Invalid access token');
 
     const findRefresh = await this.repository.findOneBy({ token });
     if (findRefresh) throw new UnauthorizedException('Token is banned');

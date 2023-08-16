@@ -12,6 +12,10 @@ export class Category {
   @Field({ nullable: false })
   name: string;
 
+  @Field()
+  @Column()
+  author_id: string;
+
   @CreateDateColumn()
   @Field({ nullable: false })
   created_at: Date;

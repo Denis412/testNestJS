@@ -1,6 +1,7 @@
 import { OnModuleInit } from '@nestjs/common';
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { CreateMessageInput } from 'src/message/dto/create-message.input';
 import { MessageService } from 'src/message/message.service';
 
@@ -22,7 +23,7 @@ export class myGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('newMessage')
-  async onNewMessage(@MessageBody() body: any) {
+  async onNewMessage(@MessageBody() body: any, @CurrentUser() userId: string) {
     const input: CreateMessageInput = {
       text: body.text,
       sender: {
@@ -37,6 +38,6 @@ export class myGateway implements OnModuleInit {
     };
 
     this.server.emit('message', body);
-    await this.messageService.create(input);
+    await this.messageService.create(input, userId);
   }
 }

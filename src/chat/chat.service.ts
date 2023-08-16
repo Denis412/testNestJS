@@ -13,8 +13,8 @@ import generateEntityId from 'src/helpers/generateEntityId';
 export class ChatService {
   constructor(@InjectRepository(Chat) private readonly repository: Repository<Chat>) {}
 
-  create(input: CreateChatInput) {
-    return this.repository.save({ ...input, id: generateEntityId() });
+  create(input: CreateChatInput, authorId: string) {
+    return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
   }
 
   findAll(page?: number, perPage?: number, where?: PaginatorWhere, orderBy?: PaginatorOrderBy) {

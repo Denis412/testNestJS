@@ -18,8 +18,8 @@ export class ProductService {
     private readonly userService: UserService,
   ) {}
 
-  create(input: CreateProductInput) {
-    return this.repository.save({ ...input, id: generateEntityId() });
+  create(input: CreateProductInput, authorId: string) {
+    return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
   }
 
   findAll(where?: PaginatorWhere | null, orderBy?: PaginatorOrderBy | null) {

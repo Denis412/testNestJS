@@ -10,6 +10,7 @@ import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { PaginatorChat } from './entities/paginator.entity';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @UseGuards(JWTGuard)
 @UseInterceptors(CheckValidTokenInterceptor)
@@ -18,8 +19,8 @@ export class ChatResolver {
   constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
 
   @Mutation(() => Chat)
-  createChat(@Args('input') createChatInput: CreateChatInput) {
-    return this.chatService.create(createChatInput);
+  createChat(@Args('input') createChatInput: CreateChatInput, @CurrentUser() userId: string) {
+    return this.chatService.create(createChatInput, userId);
   }
 
   @Query(() => [Chat], { name: 'chats' })

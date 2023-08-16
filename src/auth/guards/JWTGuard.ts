@@ -13,12 +13,14 @@ export class JWTGuard extends AuthGuard('jwt') {
 
   async canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
-    const token = ctx
-      .getContext()
-      .req.get('Authorization')
-      ?.replace('Bearer ', '');
+    const req = ctx.getContext().req;
+    const token = req.get('Authorization')?.replace('Bearer ', '');
 
-    <jwt.JwtPayload>jwt.verify(token, jwtConstants.secret);
+    const jwtData = <jwt.JwtPayload>jwt.verify(token, jwtConstants.secret);
+
+    console.log('data', jwtData);
+
+    req.userId = jwtData.id;
 
     return true;
   }
