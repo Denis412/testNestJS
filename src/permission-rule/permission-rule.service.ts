@@ -14,16 +14,16 @@ export class PermissionRuleService {
   constructor(@InjectRepository(PermissionRule) private readonly repository: Repository<PermissionRule>) {}
 
   create(input: CreatePermissionRuleInput, authorId: string) {
-    const permission = this.repository.findOneBy({
-      model_type: input.model_type,
-      type_name: input.type_name,
-      model_id: input.model_id,
-      owner_id: input.owner_id,
-    });
+    // const permission = this.repository.findOneBy({
+    //   model_type: input.model_type,
+    //   type_name: input.type_name,
+    //   model_id: input.model_id,
+    //   owner_id: input.owner_id,
+    // });
 
-    if (!permission) return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
+    return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
 
-    return permission;
+    // return permission;
   }
 
   async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {

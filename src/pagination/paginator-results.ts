@@ -18,8 +18,11 @@ function buildCondition(where: PaginatorWhere, qb, entity: string, call?: string
     );
   } else {
     switch (where.operator) {
-      case 'FTS':
+      case 'IN':
         qb[call](`${qb.alias}.${where.column} LIKE '%${where.value}%'`);
+        break;
+      case 'FTS':
+        qb[call](`MATCH (${qb.alias}.${where.column}) AGAINST ('${where.value}')`);
         break;
       case 'EQ':
         qb[call](`${qb.alias}.${where.column} = '${where.value}'`);
@@ -66,6 +69,8 @@ export default async function getPaginatorResults<T>(
 
   if (where) buildCondition(where, query, entity, 'orWhere');
   if (orderBy) query.orderBy(`${entity}.${orderBy.column}`, orderBy.order);
+
+  console.log('query', query.getQuery());
 
   const [entities, totalElements] = await query
     .take(perPage)

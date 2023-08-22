@@ -1,15 +1,16 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
+@Index('idx_fulltext_name', ['name'], { fulltext: true })
 export class Category {
   @PrimaryColumn()
   @Field()
   id: string;
 
-  @Column({ unique: true })
   @Field({ nullable: false })
+  @Column({ unique: true })
   name: string;
 
   @Field()
