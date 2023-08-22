@@ -7,7 +7,7 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JWTGuard } from 'src/auth/guards/JWTGuard';
 import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.interceptor';
-import { PaginatorType } from './entities/paginator.entityu';
+import { PaginatorType } from './entities/paginator.entity';
 import PaginatorWhere from 'src/types/where';
 import PaginatorOrderBy from 'src/types/orderBy';
 

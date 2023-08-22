@@ -28,6 +28,7 @@ import { Property } from './property/entities/property.entity';
 import { Type } from './type/entities/type.entity';
 import { PermissionRuleModule } from './permission-rule/permission-rule.module';
 import { PermissionRule } from './permission-rule/entities/permission-rule.entity';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { PermissionRule } from './permission-rule/entities/permission-rule.entit
     TypeModule,
     PropertyModule,
     PermissionRuleModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

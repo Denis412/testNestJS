@@ -15,19 +15,7 @@ import { CheckValidTokenInterceptor } from 'src/interceptors/check-valid-token.i
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => [User], { name: 'users' })
-  findAll(
-    @Args('page', { type: () => Int, nullable: true }) page: number,
-    @Args('perPage', { type: () => Int, nullable: true }) perPage: number,
-    @Args('where', { type: () => PaginatorWhere, nullable: true })
-    where?: PaginatorWhere,
-    @Args('orderBy', { type: () => PaginatorOrderBy, nullable: true })
-    orderBy?: PaginatorOrderBy,
-  ) {
-    return this.userService.findAll(where, orderBy);
-  }
-
-  @Query(() => PaginatorUser, { name: 'paginateUser' })
+  @Query(() => PaginatorUser, { name: 'paginate_user' })
   getAllWithPaginate(
     @Args('page', { type: () => Int, nullable: true, defaultValue: 1 })
     page: number,
@@ -41,12 +29,12 @@ export class UserResolver {
     return this.userService.getAllWithPaginate(page, perPage, where, orderBy);
   }
 
-  @Query(() => User, { name: 'user' })
+  @Query(() => User, { name: 'get_user' })
   findOne(@Args('id') id: string) {
     return this.userService.findOne(id);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => User, { name: 'update_user' })
   updateUser(
     @Args('input', { type: () => UpdateUserInput })
     updateUserInput: UpdateUserInput,

@@ -22,13 +22,13 @@ export class TypeService {
 
     const newType = this.repository.create({ ...input, author_id: authorId, id: generateEntityId() });
 
-    this.connection.query(`CREATE TABLE IF NOT EXISTS ${newType.name} ( 
-      id VARCHAR(255) NOT NULL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      author_id VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )`);
+    // this.connection.query(`CREATE TABLE IF NOT EXISTS ${newType.name} (
+    //   id VARCHAR(255) NOT NULL PRIMARY KEY,
+    //   name VARCHAR(255) NOT NULL,
+    //   author_id VARCHAR(255) NOT NULL,
+    //   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    // )`);
 
     return this.repository.save(newType);
   }

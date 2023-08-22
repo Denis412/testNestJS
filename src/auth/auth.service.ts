@@ -55,10 +55,12 @@ export class AuthService {
   async login(user: Partial<User>): Promise<SingIn> {
     const payload = { email: user.email, id: user.id };
 
+    console.log('payload', payload);
+
     return {
       user_id: user.id,
       token_type: 'Bearer',
-      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '12h' }),
       expires_in: 3600,
       refresh_token: this.jwtService.sign({ ...payload, refresh: true }, { expiresIn: '7d' }),
     };
@@ -69,7 +71,7 @@ export class AuthService {
 
     return {
       token_type: 'Bearer',
-      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      access_token: this.jwtService.sign(payload, { expiresIn: '12h' }),
       expires_in: 3600,
       refresh_token: this.jwtService.sign({ ...payload, refresh: true }, { expiresIn: '7d' }),
     };
