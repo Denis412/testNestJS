@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { CategoryModule } from './category/category.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,13 +22,8 @@ import { Chat } from './chat/entities/chat.entity';
 import { AuthModule } from './auth/auth.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { UsedRefresh } from './auth/entities/used-refresh.entity';
-import { TypeModule } from './type/type.module';
-import { PropertyModule } from './property/property.module';
-import { Property } from './property/entities/property.entity';
-import { Type } from './type/entities/type.entity';
 import { PermissionRuleModule } from './permission-rule/permission-rule.module';
 import { PermissionRule } from './permission-rule/entities/permission-rule.entity';
-import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -45,7 +40,7 @@ import { GroupModule } from './group/group.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, Property, Type, PermissionRule],
+      entities: [Category, User, Product, Cart, Favorite, Message, Chat, UsedRefresh, PermissionRule],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -59,10 +54,7 @@ import { GroupModule } from './group/group.module';
     FavoriteModule,
     AuthModule,
     GatewayModule,
-    TypeModule,
-    PropertyModule,
     PermissionRuleModule,
-    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

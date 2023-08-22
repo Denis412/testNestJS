@@ -13,17 +13,18 @@ import getPaginatorResults from 'src/pagination/paginator-results';
 export class PermissionRuleService {
   constructor(@InjectRepository(PermissionRule) private readonly repository: Repository<PermissionRule>) {}
 
-  create(input: CreatePermissionRuleInput, authorId: string) {
-    // const permission = this.repository.findOneBy({
-    //   model_type: input.model_type,
-    //   type_name: input.type_name,
-    //   model_id: input.model_id,
-    //   owner_id: input.owner_id,
-    // });
+  async create(input: CreatePermissionRuleInput, authorId: string) {
+    const permission = await this.repository.findOneBy({
+      model_type: input.model_type,
+      type_name: input.type_name,
+      owner_id: input.owner_id,
+    });
+
+    console.log('perm', permission);
+
+    if (permission) return permission;
 
     return this.repository.save({ ...input, author_id: authorId, id: generateEntityId() });
-
-    // return permission;
   }
 
   async getAllWithPagination(page: number, perPage: number, where: PaginatorWhere, orderBy: PaginatorOrderBy) {

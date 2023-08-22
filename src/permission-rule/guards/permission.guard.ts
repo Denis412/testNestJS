@@ -1,5 +1,4 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { PermissionRuleService } from '../permission-rule.service';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { PaginatorWhereOperator } from 'src/types/paginator-where-operator';
